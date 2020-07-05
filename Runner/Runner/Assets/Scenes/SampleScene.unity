@@ -342,5 +342,4 @@ MonoBehaviour:
   obstacles:
     lineThickness: 1
     blockThickness: 5
-    numberOfBlockTypes: 3
-    numberOfBlockTypes_: 5
+    gridData: {fileID: 11400000, guid: 2cea04ec3ad5e124f8aa18f1dfd027aa, type: 2}

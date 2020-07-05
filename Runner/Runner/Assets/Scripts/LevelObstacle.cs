@@ -72,6 +72,8 @@ public class LevelObstacle
 
     int numberOfBlockTypes = 5;
 
+    public GridScriptableObject gridData;
+
     public int NumberOfBlockTypes
     {
         get { return numberOfBlockTypes; }
@@ -134,6 +136,38 @@ public class LevelObstacle
         }
         texture.Apply();
     }
+
+    public void LoadGrid(int[,] loadedGrid, int numberOfBlockTypes)
+    {
+        Length = loadedGrid.GetLength(0);
+        Width = loadedGrid.GetLength(1);
+        this.numberOfBlockTypes = numberOfBlockTypes;
+
+        grid = new int[length, width];
+        for (int i = 0; i < length; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                grid[i, j] = loadedGrid[i, j];
+            }
+        }
+        RedrawTexture();
+    }
+
+    public void SaveGrid()
+    {
+        gridData.numberOfBlockTypes = numberOfBlockTypes;
+        gridData.obstacleGrid = new int[length, width];
+
+        for (int i = 0; i < length; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                gridData.obstacleGrid[i, j] = grid[i, j];
+            }
+        }
+    }
+
     public Texture2D GenerateTexture(int posI = -1, int posJ = -1)
     {
         if (texture == null || grid == null)

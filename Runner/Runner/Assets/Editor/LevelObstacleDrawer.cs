@@ -16,7 +16,7 @@ public class LevelObstacleDrawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         float height = base.GetPropertyHeight(property, label);
-        height += GetTextureGuiHeight(property) + 3 * (verticalSpacing + labelHeight) + verticalSpacing;
+        height += GetTextureGuiHeight(property) + 5 * (verticalSpacing + labelHeight) + verticalSpacing;
         return height;
     }
 
@@ -81,12 +81,74 @@ public class LevelObstacleDrawer : PropertyDrawer
         int newLength = EditorGUI.IntField(labelRect, levelObstacle.Length);
         if (newLength != levelObstacle.Length) levelObstacle.Length = newLength;
 
+
+        labelRect.y += labelHeight + verticalSpacing;
+        labelRect.x = position.x;
+        guiContent.text = "Grid Data: ";
+        GUI.Label(labelRect, guiContent);
+        labelRect.x += GUI.skin.label.CalcSize(guiContent).x;
+        labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
+        //EditorGUI.ObjectField(labelRect, property.serializedObject.FindProperty("gridData"), GUIContent.none);
+        //_ = EditorGUI.ObjectField(labelRect, property.serializedObject.targetObject, typeof(GridScriptableObject));
+        //GridScriptableObject gridData = EditorGUILayout.ObjectField("Script:", levelObstacle.gridData, typeof(GridScriptableObject), false) as GridScriptableObject;
+        GridScriptableObject gridData = EditorGUI.ObjectField(labelRect, levelObstacle.gridData, typeof(GridScriptableObject), false) as GridScriptableObject;
+        if (true/*(gridData != levelObstacle.gridData || levelObstacle.gridData == null) && gridData != null*/)
+        {
+            levelObstacle.gridData = gridData;
+            //levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes);
+        }
+
+
+        labelRect.y += labelHeight + verticalSpacing;
+        labelRect.x = position.x;
+        labelRect.width = propertyWidth * 0.5f;
+        if (GUI.Button(labelRect, new GUIContent("Load", "Load data from selected scriptable object"))){
+            if (gridData != null)
+            {
+                levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes);
+            }
+        }
+
+        labelRect.x += propertyWidth * 0.5f;
+        if (GUI.Button(labelRect, new GUIContent("Save", "Save data to selected scriptable object")))
+        {
+            if (gridData != null)
+            {
+                levelObstacle.SaveGrid();
+            }
+        }
+
+        labelRect.x = position.x;
+        labelRect.width = propertyWidth;
+
         labelRect.y += labelHeight + verticalSpacing;
 
         GUIStyle style = new GUIStyle();
         style.normal.background = levelObstacle.GenerateTexture();
         Rect textureRect = new Rect(position.x, labelRect.y, propertyWidth, GetTextureGuiHeight(property));
         GUI.Label(textureRect, GUIContent.none, style);
+
+        //GUILayout.BeginHorizontal();
+
+        //if (GUILayout.Button(new GUIContent("Load", "Load data from selected scriptable object")))
+        //{
+        //    if(gridData != null)
+        //    {
+        //        levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes);
+        //    }
+        //}
+
+        //if (GUILayout.Button(new GUIContent("Save", "Save data to selected scriptable object")))
+        //{
+        //    if(gridData != null)
+        //    {
+        //        levelObstacle.SaveGrid();
+        //    }
+        //}
+
+
+
+        //GUILayout.EndHorizontal();
 
         if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0)
         {
@@ -99,7 +161,7 @@ public class LevelObstacleDrawer : PropertyDrawer
                 levelObstacle.GenerateTexture(posI, posJ);
                 foreach (var item in ActiveEditorTracker.sharedTracker.activeEditors)
                     if (item.serializedObject == property.serializedObject)
-                    { item.Repaint(); return; }
+                    { item.Repaint(); break; } 
             }
         }
 
