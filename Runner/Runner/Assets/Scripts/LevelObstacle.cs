@@ -140,7 +140,6 @@ public class LevelObstacle
         {
             for (int j = 0; j < width; j++)
             {
-                //grid[i, j] = 0;
                 Color[] colors = new Color[(blockThickness + lineThickness) * lineThickness];
                 for (int colorIndex = 0; colorIndex < colors.Length; colorIndex++)
                 {
@@ -275,17 +274,10 @@ public class LevelObstacle
             ResetGrid();
         }
 
-        //Debug.Log("posI: " + posI + ", posJ: " + posJ);
         if (posI < 0 || posI >= length || posJ < 0 || posJ >= width)
         {
-            //Debug.Log("returning without modifications");
             return texture;
         }
-
-        //Debug.Log("returning with modifications");
-
-        //Debug.Log("before: " + posI + ", " + posJ);
-        //Debug.Log("before: grid[" + posI + ", " + posJ + "] = " + grid[posI, posJ]);
 
         if (clickLeft == 0)
         {
@@ -294,11 +286,6 @@ public class LevelObstacle
         {
             grabbableGrid[posI, posJ] = (grabbableGrid[posI, posJ] + 1) % numberOfGrabbableTypes;
         }
-
-        //Debug.Log("grid[" + posI + ", " + posJ + "] = " + grid[posI, posJ]);
-        //Debug.Log("numberOfBlockTypes_: " + numberOfBlockTypes_);
-        //Debug.Log("(grid[posX, posY] + 1) % numberOfBlockTypes_: " + ((grid[posI, posJ] + 1) % numberOfBlockTypes_));
-
 
         Color[] newColors = new Color[blockThickness * blockThickness];
         Color colorToSet = Color.Lerp(Color.white, Color.red, ((float)grid[posI, posJ]) / (numberOfBlockTypes > 1 ? numberOfBlockTypes - 1 : 1));
@@ -309,11 +296,8 @@ public class LevelObstacle
 
         texture.SetPixels((posJ) * (blockThickness + lineThickness) + lineThickness, (length - 1 - posI) * (blockThickness + lineThickness) + lineThickness, blockThickness, blockThickness, newColors);
         DrawGrabbable(posI, posJ);
-        //texture.SetPixels(0, 0, blockThickness, blockThickness, newColors);
         texture.Apply();
 
-
-        //Debug.Log("returning");
         return texture;
 
     }

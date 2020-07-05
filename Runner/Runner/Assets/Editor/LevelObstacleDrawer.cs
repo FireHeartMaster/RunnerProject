@@ -27,7 +27,6 @@ public class LevelObstacleDrawer : PropertyDrawer
     float labelHeight = 10f;
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        //base.OnGUI(position, property, label);
         Event guiEvent = Event.current;
         LevelObstacle levelObstacle = (LevelObstacle)fieldInfo.GetValue(property.serializedObject.targetObject);
 
@@ -38,21 +37,8 @@ public class LevelObstacleDrawer : PropertyDrawer
 
         Rect labelRect = new Rect(position.x, position.y, propertyWidth, labelHeight);
         GUI.Label(labelRect, label);
-        //labelRect.y += labelHeight + verticalSpacing;
 
         GUIContent guiContent = new GUIContent("Width");
-        /*GUI.Label(labelRect, guiContent);
-        labelRect.x += GUI.skin.label.CalcSize(guiContent).x;
-        labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
-        EditorGUI.PropertyField(labelRect, property.FindPropertyRelative("lineThickness"), GUIContent.none);
-
-        labelRect.y += labelHeight + verticalSpacing;
-        labelRect.x = position.x;
-        guiContent.text = "Block Thickness";
-        GUI.Label(labelRect, guiContent);
-        labelRect.x += GUI.skin.label.CalcSize(guiContent).x;
-        labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
-        EditorGUI.PropertyField(labelRect, property.FindPropertyRelative("blockThickness"), GUIContent.none);*/
 
         labelRect.y += labelHeight + verticalSpacing;
         labelRect.x = position.x;
@@ -88,9 +74,7 @@ public class LevelObstacleDrawer : PropertyDrawer
         GUI.Label(labelRect, guiContent);
         labelRect.x += GUI.skin.label.CalcSize(guiContent).x;
         labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
-        //EditorGUI.ObjectField(labelRect, property.serializedObject.FindProperty("gridData"), GUIContent.none);
-        //_ = EditorGUI.ObjectField(labelRect, property.serializedObject.targetObject, typeof(GridScriptableObject));
-        //GridScriptableObject gridData = EditorGUILayout.ObjectField("Script:", levelObstacle.gridData, typeof(GridScriptableObject), false) as GridScriptableObject;
+        
         GridScriptableObject gridData = EditorGUI.ObjectField(labelRect, levelObstacle.gridData, typeof(GridScriptableObject), false) as GridScriptableObject;
         if (true/*(gridData != levelObstacle.gridData || levelObstacle.gridData == null) && gridData != null*/)
         {
@@ -134,45 +118,19 @@ public class LevelObstacleDrawer : PropertyDrawer
         Rect textureRect = new Rect(position.x, labelRect.y, propertyWidth, GetTextureGuiHeight(property));
         GUI.Label(textureRect, GUIContent.none, style);
 
-        //GUILayout.BeginHorizontal();
-
-        //if (GUILayout.Button(new GUIContent("Load", "Load data from selected scriptable object")))
-        //{
-        //    if(gridData != null)
-        //    {
-        //        levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes);
-        //    }
-        //}
-
-        //if (GUILayout.Button(new GUIContent("Save", "Save data to selected scriptable object")))
-        //{
-        //    if(gridData != null)
-        //    {
-        //        levelObstacle.SaveGrid();
-        //    }
-        //}
-
-
-
-        //GUILayout.EndHorizontal();
-
         if (guiEvent.type == EventType.MouseDown && (guiEvent.button == 0 || guiEvent.button == 1))
         {
             if (textureRect.Contains(guiEvent.mousePosition))
             {
-                //Debug.Log("mouse click");
                 int posI = (int)(((guiEvent.mousePosition.y - textureRect.y) / textureRect.height) * levelObstacle.Length);
                 int posJ = (int)(((guiEvent.mousePosition.x - textureRect.x) / textureRect.width) * levelObstacle.Width);
-                //Debug.Log("posI, posJ: " + posI + ", " + posJ);
+                
                 levelObstacle.GenerateTexture(posI, posJ, guiEvent.button);
                 foreach (var item in ActiveEditorTracker.sharedTracker.activeEditors)
                     if (item.serializedObject == property.serializedObject)
                     { item.Repaint(); break; } 
             }
         }
-
-        //EditorGUI.PropertyField(labelRect, property.FindPropertyRelative("blockThickness"), new GUIContent("blockThickness"));
-
 
     }
 
