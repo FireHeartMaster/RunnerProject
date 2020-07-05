@@ -70,8 +70,24 @@ public class LevelObstacle
         return grid;
     }
 
-    public int numberOfBlockTypes = 3;
-    public int numberOfBlockTypes_ = 5;
+    int numberOfBlockTypes = 5;
+
+    public int NumberOfBlockTypes
+    {
+        get { return numberOfBlockTypes; }
+        set 
+        { 
+            numberOfBlockTypes = value > 0 ? value : 1;           
+            for (int i = 0; i < length; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    grid[i, j] = grid[i, j] >= numberOfBlockTypes ? 0 : grid[i, j];
+                }
+            }
+            RedrawTexture();
+        }
+    }
 
     public void RedrawTexture()
     {
@@ -107,10 +123,11 @@ public class LevelObstacle
                     texture.SetPixels((j + 1) * (blockThickness + lineThickness), 0, lineThickness, lineThickness, colors);
                 }
 
-                colors = colors = new Color[blockThickness * blockThickness];
+                colors = new Color[blockThickness * blockThickness];
+                Color colorToSet = Color.Lerp(Color.white, Color.red, ((float)grid[i, j]) / (numberOfBlockTypes > 1 ? numberOfBlockTypes - 1 : 1));
                 for (int colorIndex = 0; colorIndex < colors.Length; colorIndex++)
                 {
-                    colors[colorIndex] = Color.Lerp(Color.white, Color.red, ((float)grid[i, j]) / numberOfBlockTypes_);
+                    colors[colorIndex] = colorToSet;
                 }
                 texture.SetPixels((j) * (blockThickness + lineThickness) + lineThickness, (length - i - 1) * (blockThickness + lineThickness) + lineThickness, blockThickness, blockThickness, colors);
             }
@@ -178,7 +195,7 @@ public class LevelObstacle
         //Debug.Log("before: " + posI + ", " + posJ);
         //Debug.Log("before: grid[" + posI + ", " + posJ + "] = " + grid[posI, posJ]);
 
-        grid[posI, posJ] = (grid[posI, posJ] + 1) % numberOfBlockTypes_;
+        grid[posI, posJ] = (grid[posI, posJ] + 1) % numberOfBlockTypes;
 
         //Debug.Log("grid[" + posI + ", " + posJ + "] = " + grid[posI, posJ]);
         //Debug.Log("numberOfBlockTypes_: " + numberOfBlockTypes_);
@@ -186,7 +203,7 @@ public class LevelObstacle
 
 
         Color[] newColors = new Color[blockThickness * blockThickness];
-        Color colorToSet = Color.Lerp(Color.white, Color.red, ((float)grid[posI, posJ]) / numberOfBlockTypes_);
+        Color colorToSet = Color.Lerp(Color.white, Color.red, ((float)grid[posI, posJ]) / (numberOfBlockTypes > 1 ? numberOfBlockTypes - 1 : 1));
         for (int colorIndex = 0; colorIndex < newColors.Length; colorIndex++)
         {
             newColors[colorIndex] = colorToSet;

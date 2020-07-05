@@ -16,12 +16,12 @@ public class LevelObstacleDrawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         float height = base.GetPropertyHeight(property, label);
-        height += GetTextureGuiHeight(property) + 2 * (verticalSpacing + labelHeight);
+        height += GetTextureGuiHeight(property) + 3 * (verticalSpacing + labelHeight) + verticalSpacing;
         return height;
     }
 
     float propertyWidth = EditorGUIUtility.currentViewWidth - 35f;
-    float verticalSpacing = 10f;
+    float verticalSpacing = 5f;
 
     float labelWidth = 10f;
     float labelHeight = 10f;
@@ -56,7 +56,16 @@ public class LevelObstacleDrawer : PropertyDrawer
 
         labelRect.y += labelHeight + verticalSpacing;
         labelRect.x = position.x;
-        guiContent.text = "Width";
+        guiContent.text = "Number Of Block Types: ";
+        GUI.Label(labelRect, guiContent);
+        labelRect.x += GUI.skin.label.CalcSize(guiContent).x;
+        labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
+        int newNumberOfBlockTypes = EditorGUI.IntField(labelRect, levelObstacle.NumberOfBlockTypes);
+        if (newNumberOfBlockTypes != levelObstacle.NumberOfBlockTypes) levelObstacle.NumberOfBlockTypes = newNumberOfBlockTypes;
+
+        labelRect.y += labelHeight + verticalSpacing;
+        labelRect.x = position.x;
+        guiContent.text = "Width: ";
         GUI.Label(labelRect, guiContent);
         labelRect.x += GUI.skin.label.CalcSize(guiContent).x;
         labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
@@ -65,7 +74,7 @@ public class LevelObstacleDrawer : PropertyDrawer
 
         labelRect.y += labelHeight + verticalSpacing;
         labelRect.x = position.x;
-        guiContent.text = "Length";
+        guiContent.text = "Length: ";
         GUI.Label(labelRect, guiContent);
         labelRect.x += GUI.skin.label.CalcSize(guiContent).x;
         labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
