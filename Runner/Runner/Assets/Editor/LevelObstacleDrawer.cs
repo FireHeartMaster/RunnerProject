@@ -101,21 +101,27 @@ public class LevelObstacleDrawer : PropertyDrawer
 
         labelRect.y += labelHeight + verticalSpacing;
         labelRect.x = position.x;
-        labelRect.width = propertyWidth * 0.5f;
+        labelRect.width = propertyWidth * 0.333f;
         if (GUI.Button(labelRect, new GUIContent("Load", "Load data from selected scriptable object"))){
             if (gridData != null)
             {
-                levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes);
+                levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes, gridData.collectableGrid, gridData.numberOfGrabbableTypes);
             }
         }
 
-        labelRect.x += propertyWidth * 0.5f;
+        labelRect.x += propertyWidth * 0.333f;
         if (GUI.Button(labelRect, new GUIContent("Save", "Save data to selected scriptable object")))
         {
             if (gridData != null)
             {
                 levelObstacle.SaveGrid();
             }
+        }
+
+        labelRect.x += propertyWidth * 0.333f;
+        if (GUI.Button(labelRect, new GUIContent("Reset", "Reset grid to blank state")))
+        {
+            levelObstacle.ResetGrid();
         }
 
         labelRect.x = position.x;
@@ -150,7 +156,7 @@ public class LevelObstacleDrawer : PropertyDrawer
 
         //GUILayout.EndHorizontal();
 
-        if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0)
+        if (guiEvent.type == EventType.MouseDown && (guiEvent.button == 0 || guiEvent.button == 1))
         {
             if (textureRect.Contains(guiEvent.mousePosition))
             {
@@ -158,7 +164,7 @@ public class LevelObstacleDrawer : PropertyDrawer
                 int posI = (int)(((guiEvent.mousePosition.y - textureRect.y) / textureRect.height) * levelObstacle.Length);
                 int posJ = (int)(((guiEvent.mousePosition.x - textureRect.x) / textureRect.width) * levelObstacle.Width);
                 //Debug.Log("posI, posJ: " + posI + ", " + posJ);
-                levelObstacle.GenerateTexture(posI, posJ);
+                levelObstacle.GenerateTexture(posI, posJ, guiEvent.button);
                 foreach (var item in ActiveEditorTracker.sharedTracker.activeEditors)
                     if (item.serializedObject == property.serializedObject)
                     { item.Repaint(); break; } 
