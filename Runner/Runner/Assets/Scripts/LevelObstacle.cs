@@ -106,6 +106,24 @@ public class LevelObstacle
                 for (int j = 0; j < width; j++)
                 {
                     grid[i, j] = grid[i, j] >= numberOfBlockTypes ? 0 : grid[i, j];
+                    //grabbableGrid[i, j] = grabbableGrid[i, j] >= numberOfGrabbableTypes ? 0 : grabbableGrid[i, j];
+                }
+            }
+            RedrawTexture();
+        }
+    }
+
+    public int NumberOfGrabbableTypes
+    {
+        get { return numberOfGrabbableTypes; }
+        set
+        {
+            numberOfGrabbableTypes = value > 0 ? value : 1;
+            for (int i = 0; i < length; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    //grid[i, j] = grid[i, j] >= numberOfBlockTypes ? 0 : grid[i, j];
                     grabbableGrid[i, j] = grabbableGrid[i, j] >= numberOfGrabbableTypes ? 0 : grabbableGrid[i, j];
                 }
             }
@@ -179,10 +197,26 @@ public class LevelObstacle
         texture.Apply();
     }
 
-    public void LoadGrid(int[,] loadedGrid, int numberOfBlockTypes, int[,] loadedGrabbableGrid, int numberOfGrabbableTypes)
+    public void LoadGrid(int[] auxLoadedGrid, int[] auxLoadedGrabbableGrid, int loadedLength, int loadedWidth, int numberOfBlockTypes, int numberOfGrabbableTypes)
     {
-        Length = loadedGrid.GetLength(0);
-        Width = loadedGrid.GetLength(1);
+        //if(loadedGrid == null || loadedGrabbableGrid == null)
+        //{
+        //    Debug.LogError("loadedGrid was null or loadedGrabbableGrid was null");
+        //    gridData.obstacleGrid = new int[5, 5];
+        //    gridData.collectableGrid = new int[5, 5];
+
+        //    loadedGrid = gridData.obstacleGrid;
+        //    loadedGrabbableGrid = gridData.collectableGrid;
+        //}
+        //Debug.Log("LoadGrid");
+        //Debug.Log("numberOfBlockTypes: " + numberOfBlockTypes);
+        //Debug.Log("numberOfGrabbableTypes: " + numberOfGrabbableTypes);
+        //Debug.Log("loadedGrid[0, 0]: " + loadedGrid[0, 0]);
+        //Debug.Log("loadedGrid.GetLength(0): " + loadedGrid.GetLength(0));
+        //Debug.Log("loadedGrid.GetLength(1): " + loadedGrid.GetLength(1));
+
+        length = loadedLength;
+        width = loadedWidth;
         this.numberOfBlockTypes = numberOfBlockTypes;
         this.numberOfGrabbableTypes = numberOfGrabbableTypes;
 
@@ -192,8 +226,8 @@ public class LevelObstacle
         {
             for (int j = 0; j < width; j++)
             {
-                grid[i, j] = loadedGrid[i, j];
-                grabbableGrid[i, j] = loadedGrabbableGrid[i, j];
+                grid[i, j] = auxLoadedGrid[i * width + j];
+                grabbableGrid[i, j] = auxLoadedGrabbableGrid[i * width + j];
             }
         }
 
@@ -208,12 +242,29 @@ public class LevelObstacle
         gridData.numberOfGrabbableTypes = numberOfGrabbableTypes;
         gridData.collectableGrid = new int[length, width];
 
+        //Debug.Log("gridData.obstacleGrid.GetLength(0): " + gridData.obstacleGrid.GetLength(0));
+        //Debug.Log("gridData.obstacleGrid.GetLength(1): " + gridData.obstacleGrid.GetLength(1));
+        //Debug.Log("length: " + length);
+        //Debug.Log("width: " + width);
+
+        gridData.length = length;
+        gridData.width = width;
+
+        gridData.auxObstacleGrid = new int[length * width];
+        gridData.auxCollectableGrid = new int[length * width];
+
         for (int i = 0; i < length; i++)
         {
             for (int j = 0; j < width; j++)
             {
+                int a = gridData.obstacleGrid[i, j];
+                int b = grid[i, j];
                 gridData.obstacleGrid[i, j] = grid[i, j];
+
                 gridData.collectableGrid[i, j] = grabbableGrid[i, j];
+
+                gridData.auxObstacleGrid[i * width + j] = gridData.obstacleGrid[i, j];
+                gridData.auxCollectableGrid[i * width + j] = gridData.collectableGrid[i, j];
             }
         }
     }

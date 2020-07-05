@@ -16,7 +16,7 @@ public class LevelObstacleDrawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         float height = base.GetPropertyHeight(property, label);
-        height += GetTextureGuiHeight(property) + 5 * (verticalSpacing + labelHeight) + verticalSpacing;
+        height += GetTextureGuiHeight(property) + 6 * (verticalSpacing + labelHeight) + verticalSpacing;
         return height;
     }
 
@@ -48,6 +48,15 @@ public class LevelObstacleDrawer : PropertyDrawer
         labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
         int newNumberOfBlockTypes = EditorGUI.IntField(labelRect, levelObstacle.NumberOfBlockTypes);
         if (newNumberOfBlockTypes != levelObstacle.NumberOfBlockTypes) levelObstacle.NumberOfBlockTypes = newNumberOfBlockTypes;
+
+        labelRect.y += labelHeight + verticalSpacing;
+        labelRect.x = position.x;
+        guiContent.text = "Number Of Collectable Types: ";
+        GUI.Label(labelRect, guiContent);
+        labelRect.x += GUI.skin.label.CalcSize(guiContent).x;
+        labelRect.width = propertyWidth - GUI.skin.label.CalcSize(guiContent).x;
+        int newNumberOfCollectableTypes = EditorGUI.IntField(labelRect, levelObstacle.NumberOfGrabbableTypes);
+        if (newNumberOfCollectableTypes != levelObstacle.NumberOfGrabbableTypes) levelObstacle.NumberOfGrabbableTypes = newNumberOfCollectableTypes;
 
         labelRect.y += labelHeight + verticalSpacing;
         labelRect.x = position.x;
@@ -89,7 +98,8 @@ public class LevelObstacleDrawer : PropertyDrawer
         if (GUI.Button(labelRect, new GUIContent("Load", "Load data from selected scriptable object"))){
             if (gridData != null)
             {
-                levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes, gridData.collectableGrid, gridData.numberOfGrabbableTypes);
+                //levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes, gridData.collectableGrid, gridData.numberOfGrabbableTypes);
+                levelObstacle.LoadGrid(gridData.auxObstacleGrid, gridData.auxCollectableGrid, gridData.length, gridData.width, gridData.numberOfBlockTypes, gridData.numberOfGrabbableTypes);
             }
         }
 
@@ -99,6 +109,9 @@ public class LevelObstacleDrawer : PropertyDrawer
             if (gridData != null)
             {
                 levelObstacle.SaveGrid();
+                EditorUtility.SetDirty(levelObstacle.gridData);
+                //AssetDatabase.SaveAssets();
+                //EditorApplication.SaveAssets();
             }
         }
 
