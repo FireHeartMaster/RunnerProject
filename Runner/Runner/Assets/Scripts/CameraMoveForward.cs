@@ -10,7 +10,7 @@ public class CameraMoveForward : MonoBehaviour
 
     public bool canMove = true;
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         if(canMove)
             transform.position += direction * speed * Time.deltaTime;
