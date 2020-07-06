@@ -91,10 +91,12 @@ public class LevelObstacleDrawer : PropertyDrawer
             //levelObstacle.LoadGrid(gridData.obstacleGrid, gridData.numberOfBlockTypes);
         }
 
+        int numberOfButtons = 4;
+        float percentOfWholeSpace = 1f / numberOfButtons;
 
         labelRect.y += labelHeight + verticalSpacing;
         labelRect.x = position.x;
-        labelRect.width = propertyWidth * 0.333f;
+        labelRect.width = propertyWidth * percentOfWholeSpace;
         if (GUI.Button(labelRect, new GUIContent("Load", "Load data from selected scriptable object"))){
             if (gridData != null)
             {
@@ -103,7 +105,7 @@ public class LevelObstacleDrawer : PropertyDrawer
             }
         }
 
-        labelRect.x += propertyWidth * 0.333f;
+        labelRect.x += propertyWidth * percentOfWholeSpace;
         if (GUI.Button(labelRect, new GUIContent("Save", "Save data to selected scriptable object")))
         {
             if (gridData != null)
@@ -115,8 +117,14 @@ public class LevelObstacleDrawer : PropertyDrawer
             }
         }
 
-        labelRect.x += propertyWidth * 0.333f;
-        if (GUI.Button(labelRect, new GUIContent("Reset", "Reset grid to blank state")))
+        labelRect.x += propertyWidth * percentOfWholeSpace;
+        if (GUI.Button(labelRect, new GUIContent("Basic Floor", "Reset grid to basic floor in all positions")))
+        {
+            levelObstacle.ResetGridToBasicFloor();
+        }
+
+        labelRect.x += propertyWidth * percentOfWholeSpace;
+        if (GUI.Button(labelRect, new GUIContent("Reset", "Reset grid to empty in all positions")))
         {
             levelObstacle.ResetGrid();
         }

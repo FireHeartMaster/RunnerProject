@@ -269,7 +269,7 @@ public class LevelObstacle
         }
     }
 
-    public void ResetGrid()
+    public void ResetGrid(int blockIndex = 0, int grabbableIndex = 0)
     {
         grid = new int[length, width];
         grabbableGrid = new int[length, width];
@@ -279,8 +279,8 @@ public class LevelObstacle
         {
             for (int j = 0; j < width; j++)
             {
-                grid[i, j] = 0;
-                grabbableGrid[i, j] = 0;
+                grid[i, j] = blockIndex;
+                grabbableGrid[i, j] = grabbableIndex;
                 Color[] colors = new Color[(blockThickness + lineThickness) * lineThickness];
                 for (int colorIndex = 0; colorIndex < colors.Length; colorIndex++)
                 {
@@ -307,15 +307,26 @@ public class LevelObstacle
                     texture.SetPixels((j + 1) * (blockThickness + lineThickness), 0, lineThickness, lineThickness, colors);
                 }
 
-                colors = colors = new Color[blockThickness * blockThickness];
+                colors = new Color[blockThickness * blockThickness];
+                Color colorToSet = Color.Lerp(Color.white, Color.red, ((float)grid[i, j]) / (numberOfBlockTypes > 1 ? numberOfBlockTypes - 1 : 1));
                 for (int colorIndex = 0; colorIndex < colors.Length; colorIndex++)
                 {
-                    colors[colorIndex] = Color.white;
+                    colors[colorIndex] = colorToSet;
                 }
                 texture.SetPixels((j) * (blockThickness + lineThickness) + lineThickness, (length - i - 1) * (blockThickness + lineThickness) + lineThickness, blockThickness, blockThickness, colors);
+
+                DrawGrabbable(i, j);
             }
         }
         texture.Apply();
+    }
+
+    public void ResetGridToBasicFloor()
+    {
+        if(numberOfBlockTypes >= 2)
+        {
+            ResetGrid(1, 0);
+        }
     }
 
     public Texture2D GenerateTexture(int posI = -1, int posJ = -1, int clickLeft = -1)
