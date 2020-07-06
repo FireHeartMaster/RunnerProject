@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &4183039045912163914
+--- !u!1001 &1169961645977994371
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,13 +10,13 @@ PrefabInstance:
     - target: {fileID: 3170510971244238336, guid: 0d04dabd0a8e253478a327e76d47551d,
         type: 3}
       propertyPath: m_Name
-      value: Collectable
+      value: Collectable 2 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 3170510971244238343, guid: 0d04dabd0a8e253478a327e76d47551d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: ec8cc910d2d8dbd4ea0b4cecdf397a8b, type: 2}
+      objectReference: {fileID: 2100000, guid: 26e4f61cf9256e441ad7708357221746, type: 2}
     - target: {fileID: 3170510972237160897, guid: 0d04dabd0a8e253478a327e76d47551d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -74,13 +74,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6426237732787901240, guid: 0d04dabd0a8e253478a327e76d47551d,
         type: 3}
-      propertyPath: type
-      value: 0
+      propertyPath: amount0fPointsToAdd
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6426237732787901240, guid: 0d04dabd0a8e253478a327e76d47551d,
         type: 3}
-      propertyPath: amount0fPointsToAdd
-      value: 1
+      propertyPath: type
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d04dabd0a8e253478a327e76d47551d, type: 3}

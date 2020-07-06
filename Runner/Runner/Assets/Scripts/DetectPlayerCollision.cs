@@ -19,6 +19,8 @@ public class DetectPlayerCollision : MonoBehaviour
 
     [SerializeField] float timeAfterStartupToBeginDetectingCollisions = 0.4f;
 
+    PlayerStats stats;
+
     private void Awake()
     {
         //sineOfAngle = Mathf.Sin(maxAllowedAngle * Mathf.PI / 180f);
@@ -28,6 +30,8 @@ public class DetectPlayerCollision : MonoBehaviour
         //rigidbody = GetComponent<Rigidbody>();
 
         previousPosition = transform.position;
+
+        stats = GetComponent<PlayerStats>();
     }
 
     private void Start()
@@ -54,7 +58,8 @@ public class DetectPlayerCollision : MonoBehaviour
 
         if(forwardSpeed < speed - allowance && canDetectCollisions)
         {
-            Debug.LogError("Player lost - forwardSpeed: " + forwardSpeed);
+            Debug.Log("Player lost - forwardSpeed: " + forwardSpeed);
+            stats.isAlive = false;
         }
     }
 

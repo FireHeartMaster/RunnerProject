@@ -22,9 +22,20 @@ public class Pooling : MonoBehaviour
 
     [SerializeField] Transform activeObjectsParent;
 
+    public static Pooling pooling;
+
     private void Awake()
     {
         FirstInstantiationOfStaticBlocks();
+
+        if(pooling == null)
+        {
+            pooling = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void FirstInstantiationOfStaticBlocks()

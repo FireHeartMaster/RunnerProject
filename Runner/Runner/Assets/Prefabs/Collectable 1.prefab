@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  amount0fPointsToAdd: 5
 --- !u!33 &3170510971244238341
 MeshFilter:
   m_ObjectHideFlags: 0
