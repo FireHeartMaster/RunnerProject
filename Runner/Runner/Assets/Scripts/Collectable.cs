@@ -17,7 +17,7 @@ public class Collectable : MonoBehaviour
 
         if(stats != null)
         {
-            stats.amountOfPoints += amount0fPointsToAdd;
+            stats.AmountOfPoints += amount0fPointsToAdd;
 
             GameObject particles = Instantiate(particlesWhenGrabbedPrefab, transform.position, Quaternion.Euler(0f, 0f, Random.Range(0f, 180f)));
             Destroy(particles, 2f);
