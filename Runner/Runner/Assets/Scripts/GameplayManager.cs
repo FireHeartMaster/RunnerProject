@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using UnityEngine.SceneManagement;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -53,6 +56,7 @@ public class GameplayManager : MonoBehaviour
         gravitySlider.value = (Physics.gravity.y + 1) * 0.5f;
 
         deathScreen.SetActive(false);
+        deathScreenNewRecordLabel.SetActive(false);
     }
 
 
@@ -141,12 +145,84 @@ public class GameplayManager : MonoBehaviour
     }
 
     [SerializeField] GameObject deathScreen;
-    [SerializeField] TextMeshProUGUI deathScreenPoint;
+    [SerializeField] TextMeshProUGUI deathScreenPoints;
+    [SerializeField] TextMeshProUGUI deathScreenRecordPoints;
+    [SerializeField] GameObject deathScreenNewRecordLabel;
     void ActivateDeathScreen()
     {
         gravityInversionAnimation.SetActive(false);
 
         deathScreen.SetActive(true);
-        deathScreenPoint.text = stats.AmountOfPoints.ToString();
+        deathScreenPoints.text = stats.AmountOfPoints.ToString();
+
+        HandleNewRecord();
+    }
+
+    void HandleNewRecord()
+    {
+        SaveData loadedData = LoadDataFromMemory();
+
+        float best = loadedData.maxPoints;
+        if (stats.AmountOfPoints > loadedData.maxPoints)
+        {
+            SaveNewRecord(stats.AmountOfPoints);
+            deathScreenNewRecordLabel.SetActive(true);
+            best = stats.AmountOfPoints;
+        }
+
+        deathScreenRecordPoints.text = best.ToString();
+    }
+
+    void SaveNewRecord(float points)
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        //FileStream file = File.Create(Application.persistentDataPath
+        //             + "/PlayerBest.dat");
+        FileStream file = File.Create(Path.Combine(Application.persistentDataPath, "/PlayerBest.dat"));
+        SaveData data = new SaveData();
+        data.maxPoints = points;
+        bf.Serialize(file, data);
+        file.Close();
+    }
+
+    SaveData LoadDataFromMemory()
+    {
+        SaveData loadedData = new SaveData();
+        //if (File.Exists(Application.persistentDataPath
+        //           + "/PlayerBest.dat"))
+        if (File.Exists(Path.Combine(Application.persistentDataPath, "/PlayerBest.dat")))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            //FileStream file =
+            //           File.Open(Application.persistentDataPath
+            //           + "/PlayerBest.dat", FileMode.Open);
+            FileStream file =
+                       File.Open(Path.Combine(Application.persistentDataPath, "/PlayerBest.dat"), FileMode.Open);
+            SaveData data = (SaveData)bf.Deserialize(file);
+            file.Close();
+            loadedData.maxPoints = data.maxPoints;
+        }
+
+        return loadedData;
+    }
+
+    public void ReloadScene()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.buildIndex);
+    }
+}
+
+
+
+
+[System.Serializable]
+public class SaveData
+{
+    public float maxPoints;
+
+    public SaveData()
+    {
+        maxPoints = 0f;
     }
 }
