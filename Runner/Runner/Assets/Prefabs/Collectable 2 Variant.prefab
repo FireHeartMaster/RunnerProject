@@ -82,5 +82,11 @@ PrefabInstance:
       propertyPath: type
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6426237732787901240, guid: 0d04dabd0a8e253478a327e76d47551d,
+        type: 3}
+      propertyPath: particlesWhenGrabbedPrefab
+      value: 
+      objectReference: {fileID: 7150502659314965238, guid: f12b0904fb950c14abe6d907495d633f,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d04dabd0a8e253478a327e76d47551d, type: 3}

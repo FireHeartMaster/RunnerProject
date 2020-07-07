@@ -8,6 +8,7 @@ public class Collectable : MonoBehaviour
 
     public int amount0fPointsToAdd = 1;
 
+    [SerializeField] GameObject particlesWhenGrabbedPrefab;
 
 
     private void OnTriggerEnter(Collider other)
@@ -17,6 +18,9 @@ public class Collectable : MonoBehaviour
         if(stats != null)
         {
             stats.amountOfPoints += amount0fPointsToAdd;
+
+            GameObject particles = Instantiate(particlesWhenGrabbedPrefab, transform.position, Quaternion.Euler(0f, 0f, Random.Range(0f, 180f)));
+            Destroy(particles, 2f);
 
             Pooling.pooling.DestroyCollectable(gameObject, type);
         }

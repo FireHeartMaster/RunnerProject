@@ -7,4 +7,11 @@ public class PlayerStats : MonoBehaviour
     public bool isAlive = true;
 
     public int amountOfPoints = 0;
+
+
+
+    public void HandleDeath()
+    {
+
+    }
 }

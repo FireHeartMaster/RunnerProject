@@ -48,6 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   amount0fPointsToAdd: 5
+  particlesWhenGrabbedPrefab: {fileID: 7150502659314965238, guid: f12b0904fb950c14abe6d907495d633f,
+    type: 3}
 --- !u!33 &3170510971244238341
 MeshFilter:
   m_ObjectHideFlags: 0

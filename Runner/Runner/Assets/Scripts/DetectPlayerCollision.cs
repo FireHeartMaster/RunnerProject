@@ -60,6 +60,7 @@ public class DetectPlayerCollision : MonoBehaviour
         {
             Debug.Log("Player lost - forwardSpeed: " + forwardSpeed);
             stats.isAlive = false;
+            stats.HandleDeath();
         }
     }
 
