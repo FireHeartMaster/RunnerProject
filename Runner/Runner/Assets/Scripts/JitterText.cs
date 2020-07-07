@@ -13,7 +13,7 @@ public class JitterText : MonoBehaviour
     private TMP_Text m_TextComponent;
     private bool hasTextChanged;
 
-    [SerializeField] float animationDuration = 1f;
+    [SerializeField] float animationDurationFactor = 1f;
 
     //Structure to hold pre-computed animation data.
     private struct VertexAnim
@@ -86,7 +86,7 @@ public class JitterText : MonoBehaviour
         TMP_MeshInfo[] cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
 
         float timeSinceCall = 0f;
-        while (timeSinceCall < animationDuration)
+        while (timeSinceCall < animationDurationFactor)
         {
             // Get new copy of vertex data if the text has changed.
             if (hasTextChanged)
