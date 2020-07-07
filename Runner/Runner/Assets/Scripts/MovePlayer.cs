@@ -53,12 +53,12 @@ public class MovePlayer : MonoBehaviour
         //}
         timeSinceLastJump += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (canMove && Input.GetKeyDown(KeyCode.DownArrow))
         {
             Squash();
         }
 
-        if (Input.GetButtonDown("Jump") && timeSinceLastJump >= minTimeBetweenJumps)
+        if (canMove && Input.GetButtonDown("Jump") && timeSinceLastJump >= minTimeBetweenJumps)
         {
             shouldTryToJump = true;
         }
@@ -70,7 +70,7 @@ public class MovePlayer : MonoBehaviour
         if (canMove)
         {
             moveDirection += forwardMoveDirection * speed * Time.fixedDeltaTime;
-            
+            moveDirection += Input.GetAxis("Horizontal") * sideSpeed * Vector3.right * Time.fixedDeltaTime;
         }
 
 
@@ -84,7 +84,7 @@ public class MovePlayer : MonoBehaviour
         //{
         //    moveDirection += Vector3.right * sideSpeed;
         //}
-        moveDirection += Input.GetAxis("Horizontal") * sideSpeed * Vector3.right * Time.fixedDeltaTime;
+        
 
         Move(moveDirection);
 

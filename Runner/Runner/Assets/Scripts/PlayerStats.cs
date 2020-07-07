@@ -25,6 +25,12 @@ public class PlayerStats : MonoBehaviour
 
     public void HandleDeath()
     {
-        
+        Rigidbody playerRigidbody = GetComponent<Rigidbody>();
+        playerRigidbody.isKinematic = true;
+
+        MovePlayer movePlayer = GetComponent<MovePlayer>();
+        movePlayer.canMove = false;
+
+        GameplayManager.gameplayManager.DeathScreen();
     }
 }

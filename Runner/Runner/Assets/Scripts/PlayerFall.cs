@@ -10,9 +10,12 @@ public class PlayerFall : MonoBehaviour
 
         if(stats != null)
         {
-            Debug.Log("Player lost from falling");
-            stats.isAlive = false;
-            stats.HandleDeath();
+            if (stats.isAlive)
+            {
+                Debug.Log("Player lost from falling");
+                stats.isAlive = false;
+                stats.HandleDeath();
+            }
         }
     }
 }

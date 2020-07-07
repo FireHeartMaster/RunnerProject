@@ -58,9 +58,12 @@ public class DetectPlayerCollision : MonoBehaviour
 
         if(forwardSpeed < speed - allowance && canDetectCollisions)
         {
-            Debug.Log("Player lost - forwardSpeed: " + forwardSpeed);
-            stats.isAlive = false;
-            stats.HandleDeath();
+            if (stats.isAlive)
+            {
+                Debug.Log("Player lost - forwardSpeed: " + forwardSpeed);
+                stats.isAlive = false;
+                stats.HandleDeath();
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +23,24 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] GameObject gravityInversionAnimation;
     [SerializeField] Slider gravitySlider;
 
+    [SerializeField] PlayerStats stats;
+
+    public static GameplayManager gameplayManager;
+
+    bool canInvertGravity = true;
+
+    private void Awake()
+    {
+        if(gameplayManager == null)
+        {
+            gameplayManager = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
         currentGravityInversionInterval = minimumTimeToFirstInvertGravity + Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
@@ -32,29 +51,35 @@ public class GameplayManager : MonoBehaviour
         gravityInversionAnimation.SetActive(false);
 
         gravitySlider.value = (Physics.gravity.y + 1) * 0.5f;
+
+        deathScreen.SetActive(false);
     }
 
 
     private void Update()
     {
-        timeSinceLastGravityInversion += Time.deltaTime;
-
-        if(timeSinceLastGravityInversion >= currentGravityInversionInterval)
+        if (canInvertGravity)
         {
-            //invert gravity
-            timeSinceLastGravityInversion = 0;
+            timeSinceLastGravityInversion += Time.deltaTime;
 
-            currentGravityInversionInterval = Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
-
-            //Physics.gravity *= -1;
-            if(gravityInversionCoroutine != null)
+            if (timeSinceLastGravityInversion >= currentGravityInversionInterval)
             {
-                StopCoroutine(gravityInversionCoroutine);
-            }
+                //invert gravity
+                timeSinceLastGravityInversion = 0;
 
-            gravityInversionCoroutine = InvertGravity();
-            StartCoroutine(gravityInversionCoroutine);
+                currentGravityInversionInterval = Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
+
+                //Physics.gravity *= -1;
+                if (gravityInversionCoroutine != null)
+                {
+                    StopCoroutine(gravityInversionCoroutine);
+                }
+
+                gravityInversionCoroutine = InvertGravity();
+                StartCoroutine(gravityInversionCoroutine);
+            }
         }
+        
 
         //Debug.Log("gravity: " + Physics.gravity.y);
     }
@@ -93,5 +118,35 @@ public class GameplayManager : MonoBehaviour
     float Remap01(float value, float minLimit, float maxLimit)
     {
         return (value - minLimit) / (maxLimit - minLimit);
+    }
+
+    IEnumerator deathScreenDelayedActivationCoroutine;
+    public void DeathScreen()
+    {
+        canInvertGravity = false;
+
+        if (deathScreenDelayedActivationCoroutine != null)
+        {
+            StopCoroutine(deathScreenDelayedActivationCoroutine);
+        }
+        deathScreenDelayedActivationCoroutine = DeathScreenDelayedActivation();
+        StartCoroutine(deathScreenDelayedActivationCoroutine);
+    }
+
+    [SerializeField] float timeToDelayDeathScreen = 1f;
+    IEnumerator DeathScreenDelayedActivation()
+    {
+        yield return new WaitForSeconds(timeToDelayDeathScreen);
+        ActivateDeathScreen();
+    }
+
+    [SerializeField] GameObject deathScreen;
+    [SerializeField] TextMeshProUGUI deathScreenPoint;
+    void ActivateDeathScreen()
+    {
+        gravityInversionAnimation.SetActive(false);
+
+        deathScreen.SetActive(true);
+        deathScreenPoint.text = stats.AmountOfPoints.ToString();
     }
 }
