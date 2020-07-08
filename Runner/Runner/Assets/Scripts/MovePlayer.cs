@@ -9,7 +9,7 @@ public class MovePlayer : MonoBehaviour
 
     [SerializeField] Vector3 forwardMoveDirection = Vector3.forward;
 
-    public bool canMove = true;
+    public bool canMove = false;
 
     //bool canJump = true;
     bool jump = false;
@@ -35,6 +35,12 @@ public class MovePlayer : MonoBehaviour
     [SerializeField] int numberOfBouncesOnReversingScaleBack = 2;
     [SerializeField, Range(1f, 2f)] float scaleMultiplierWhenBounceReversingScale = 1.2f;
 
+    [ContextMenu("Start Moving")]
+    public void StartMoving()
+    {
+        canMove = true;
+    }
+
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -51,55 +57,61 @@ public class MovePlayer : MonoBehaviour
         //{
         //    TryToJump();
         //}
-        timeSinceLastJump += Time.deltaTime;
 
-        if (canMove && Input.GetKeyDown(KeyCode.DownArrow))
+        if (canMove)
         {
-            Squash();
-        }
+            timeSinceLastJump += Time.deltaTime;
 
-        if (canMove && Input.GetButtonDown("Jump") && timeSinceLastJump >= minTimeBetweenJumps)
-        {
-            shouldTryToJump = true;
+            if (canMove && Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                Squash();
+            }
+
+            if (canMove && Input.GetButtonDown("Jump") && timeSinceLastJump >= minTimeBetweenJumps)
+            {
+                shouldTryToJump = true;
+            }
         }
     }
     private void FixedUpdate()
     {
-        Vector3 moveDirection = Vector3.zero;
-
         if (canMove)
         {
-            moveDirection += forwardMoveDirection * speed * Time.fixedDeltaTime;
-            moveDirection += Input.GetAxis("Horizontal") * sideSpeed * Vector3.right * Time.fixedDeltaTime;
-        }
+            Vector3 moveDirection = Vector3.zero;
+
+            if (canMove)
+            {
+                moveDirection += forwardMoveDirection * speed * Time.fixedDeltaTime;
+                moveDirection += Input.GetAxis("Horizontal") * sideSpeed * Vector3.right * Time.fixedDeltaTime;
+            }
 
 
 
-        //if (Input.GetButton("Left"))
-        //{
-        //    moveDirection += Vector3.left * sideSpeed;
-        //}
+            //if (Input.GetButton("Left"))
+            //{
+            //    moveDirection += Vector3.left * sideSpeed;
+            //}
 
-        //if (Input.GetButton("Right"))
-        //{
-        //    moveDirection += Vector3.right * sideSpeed;
-        //}
-        
-
-        Move(moveDirection);
+            //if (Input.GetButton("Right"))
+            //{
+            //    moveDirection += Vector3.right * sideSpeed;
+            //}
 
 
-        //if (Input.GetButtonDown("Jump") && timeSinceLastJump >= minTimeBetweenJumps)
-        //{
-        //    TryToJump();
-        //}
+            Move(moveDirection);
 
-        if (shouldTryToJump)
-        {
-            shouldTryToJump = false;
-            TryToJump();
-        }
 
+            //if (Input.GetButtonDown("Jump") && timeSinceLastJump >= minTimeBetweenJumps)
+            //{
+            //    TryToJump();
+            //}
+
+            if (shouldTryToJump)
+            {
+                shouldTryToJump = false;
+                TryToJump();
+            }
+        }       
     }
     bool shouldTryToJump = false;
 
@@ -137,6 +149,7 @@ public class MovePlayer : MonoBehaviour
         //Debug.Log("force: ");
         //Debug.Log(force);
         rigidbody.AddForce(force, ForceMode.VelocityChange);
+        SoundManager.soundManager.JumpSound();
     }
 
     IEnumerator squash;

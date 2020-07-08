@@ -32,5 +32,7 @@ public class PlayerStats : MonoBehaviour
         movePlayer.canMove = false;
 
         GameplayManager.gameplayManager.DeathScreen();
+
+        SoundManager.soundManager.DeathHandleSounds();
     }
 }

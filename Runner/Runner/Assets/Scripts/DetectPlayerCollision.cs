@@ -34,10 +34,20 @@ public class DetectPlayerCollision : MonoBehaviour
         stats = GetComponent<PlayerStats>();
     }
 
-    private void Start()
+    public bool canStartDetectingCollisions = false;
+
+    [ContextMenu("Start Detecting Collisions")]
+    public void StartDetectingCollisions()
     {
+        canStartDetectingCollisions = true;
         IEnumerator delayCollisionDetectionCoroutine = DelayCollisionDetection();
         StartCoroutine(delayCollisionDetectionCoroutine);
+    }
+
+    private void Start()
+    {
+        //IEnumerator delayCollisionDetectionCoroutine = DelayCollisionDetection();
+        //StartCoroutine(delayCollisionDetectionCoroutine);
     }
     IEnumerator DelayCollisionDetection()
     {
@@ -51,18 +61,21 @@ public class DetectPlayerCollision : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float forwardSpeed = (transform.position.z - previousPosition.z) / Time.fixedDeltaTime;
-
-        previousPosition = transform.position;
-        //Debug.Log("forwardSpeed: " + forwardSpeed);
-
-        if(forwardSpeed < speed - allowance && canDetectCollisions)
+        if (canStartDetectingCollisions)
         {
-            if (stats.isAlive)
+            float forwardSpeed = (transform.position.z - previousPosition.z) / Time.fixedDeltaTime;
+
+            previousPosition = transform.position;
+            //Debug.Log("forwardSpeed: " + forwardSpeed);
+
+            if (forwardSpeed < speed - allowance && canDetectCollisions)
             {
-                Debug.Log("Player lost - forwardSpeed: " + forwardSpeed);
-                stats.isAlive = false;
-                stats.HandleDeath();
+                if (stats.isAlive)
+                {
+                    Debug.Log("Player lost - forwardSpeed: " + forwardSpeed);
+                    stats.isAlive = false;
+                    stats.HandleDeath();
+                }
             }
         }
     }

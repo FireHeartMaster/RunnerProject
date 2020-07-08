@@ -32,6 +32,53 @@ public class GameplayManager : MonoBehaviour
 
     bool canInvertGravity = true;
 
+    public bool canStartGame = false;
+
+    [SerializeField] CameraFollow cameraFollow;
+
+    [ContextMenu("Start Game")]
+    public void StartGame()
+    {
+        canStartGame = true;
+
+        currentGravityInversionInterval = minimumTimeToFirstInvertGravity + Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
+
+        Physics.gravity = new Vector3(0f, -9.81f, 0f);
+
+        originalGravity = Physics.gravity;
+        fullGravity = Physics.gravity;
+
+        gravityInversionAnimation.SetActive(false);
+
+        gravitySlider.value = (Physics.gravity.y + 1) * 0.5f;
+
+        deathScreen.SetActive(false);
+        deathScreenNewRecordLabel.SetActive(false);
+
+        stats.GetComponent<MovePlayer>().StartMoving();
+        stats.GetComponent<DetectPlayerCollision>().StartDetectingCollisions();
+        SoundManager.soundManager.StartBackgroundMusic();
+        cameraFollow.CameraCanFollow();
+    }
+
+    public void ResetGameplaymanager()
+    {
+        timeSinceLastGravityInversion = 0;
+        canInvertGravity = true;
+
+        if (gravityInversionCoroutine != null)
+        {
+            StopCoroutine(gravityInversionCoroutine);
+        }
+
+        if(deathScreenDelayedActivationCoroutine != null)
+        {
+            StopCoroutine(deathScreenDelayedActivationCoroutine);
+        }
+
+        StartGame();
+    }
+
     private void Awake()
     {
         if(gameplayManager == null)
@@ -46,46 +93,52 @@ public class GameplayManager : MonoBehaviour
 
     private void Start()
     {
-        currentGravityInversionInterval = minimumTimeToFirstInvertGravity + Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
+        StartGame();
+        //currentGravityInversionInterval = minimumTimeToFirstInvertGravity + Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
 
-        originalGravity = Physics.gravity;
-        fullGravity = Physics.gravity;
+        //Physics.gravity = new Vector3(0f, -9.81f, 0f);
 
-        gravityInversionAnimation.SetActive(false);
+        //originalGravity = Physics.gravity;
+        //fullGravity = Physics.gravity;
 
-        gravitySlider.value = (Physics.gravity.y + 1) * 0.5f;
+        //gravityInversionAnimation.SetActive(false);
 
-        deathScreen.SetActive(false);
-        deathScreenNewRecordLabel.SetActive(false);
+        //gravitySlider.value = (Physics.gravity.y + 1) * 0.5f;
+
+        //deathScreen.SetActive(false);
+        //deathScreenNewRecordLabel.SetActive(false);
     }
 
 
     private void Update()
     {
-        if (canInvertGravity)
+        if (canStartGame)
         {
-            timeSinceLastGravityInversion += Time.deltaTime;
-
-            if (timeSinceLastGravityInversion >= currentGravityInversionInterval)
+            if (canInvertGravity)
             {
-                //invert gravity
-                timeSinceLastGravityInversion = 0;
+                timeSinceLastGravityInversion += Time.deltaTime;
 
-                currentGravityInversionInterval = Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
-
-                //Physics.gravity *= -1;
-                if (gravityInversionCoroutine != null)
+                if (timeSinceLastGravityInversion >= currentGravityInversionInterval)
                 {
-                    StopCoroutine(gravityInversionCoroutine);
+                    //invert gravity
+                    timeSinceLastGravityInversion = 0;
+
+                    currentGravityInversionInterval = Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
+
+                    //Physics.gravity *= -1;
+                    if (gravityInversionCoroutine != null)
+                    {
+                        StopCoroutine(gravityInversionCoroutine);
+                    }
+
+                    gravityInversionCoroutine = InvertGravity();
+                    StartCoroutine(gravityInversionCoroutine);
                 }
-
-                gravityInversionCoroutine = InvertGravity();
-                StartCoroutine(gravityInversionCoroutine);
             }
-        }
-        
 
-        //Debug.Log("gravity: " + Physics.gravity.y);
+
+            //Debug.Log("gravity: " + Physics.gravity.y);
+        }
     }
 
     IEnumerator gravityInversionCoroutine;

@@ -23,6 +23,8 @@ public class Collectable : MonoBehaviour
             Destroy(particles, 2f);
 
             Pooling.pooling.DestroyCollectable(gameObject, type);
+
+            SoundManager.soundManager.PlaySoundCollectible();
         }
     }
 }

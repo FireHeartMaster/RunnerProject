@@ -8,18 +8,34 @@ public class CameraFollow : MonoBehaviour
 
     [HideInInspector] public Vector3 offset;
 
+    public bool cameraCanFollow = false;
+
+    public void CameraCanFollow()
+    {
+        cameraCanFollow = true;
+
+        offset = target.position - transform.position;
+    }
+
     private void Awake()
     {
-        offset = target.position - transform.position;
+        //offset = target.position - transform.position;
         //offset.x = 0f;
         //offset.y = 0f;
     }
 
-    private void LateUpdate()
+    public void CameraFollowReset()
     {
 
-        Vector3 newPosition = transform.position;
-        newPosition.z = target.position.z - offset.z;
-        transform.position = newPosition;
+    }
+
+    private void LateUpdate()
+    {
+        if (cameraCanFollow)
+        {
+            Vector3 newPosition = transform.position;
+            newPosition.z = target.position.z - offset.z;
+            transform.position = newPosition;
+        }
     }
 }
