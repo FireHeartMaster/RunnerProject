@@ -24,13 +24,19 @@ public class Pooling : MonoBehaviour
 
     public static Pooling pooling;
 
+    [SerializeField] Material[] materials;
+    Material staticBlocksMaterial;
+    Material movingBlocksMaterial;
+
     public void ResetPooling()
     {
+        ChooseMaterials();
         while(activeObjectsParent.transform.childCount > 0)
         {
             MovingBlock movingBlock = activeObjectsParent.transform.GetChild(0).GetComponent<MovingBlock>();
             if(movingBlock != null)
             {
+                movingBlock.GetComponent<MeshRenderer>().material = movingBlocksMaterial;
                 DestroyMovingBlock(movingBlock.gameObject);
             }
             else
@@ -42,6 +48,7 @@ public class Pooling : MonoBehaviour
                 }
                 else
                 {
+                    activeObjectsParent.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = staticBlocksMaterial;
                     DestroyStaticBlock(activeObjectsParent.transform.GetChild(0).gameObject);
                 }
             }
@@ -50,6 +57,7 @@ public class Pooling : MonoBehaviour
 
     private void Awake()
     {
+        ChooseMaterials();
         FirstInstantiationOfStaticBlocks();
 
         if(pooling == null)
@@ -62,13 +70,35 @@ public class Pooling : MonoBehaviour
         }
     }
 
+    void ChooseMaterials()
+    {
+        //Debug.Log("materials.Length: " + materials.Length);
+        int staticBlocksMaterialIndex = Random.Range(0, materials.Length);
+        //Debug.Log("staticBlocksMaterialIndex: " + staticBlocksMaterialIndex);
+        staticBlocksMaterial = materials[staticBlocksMaterialIndex];
+
+        int maxTrials = 4;
+        int trials = 0;
+
+        int movingBlocksMaterialIndex;
+        do
+        {
+            movingBlocksMaterialIndex = Random.Range(0, materials.Length);
+            trials++;
+        } while (trials < maxTrials && movingBlocksMaterialIndex == staticBlocksMaterialIndex);
+        movingBlocksMaterial = materials[staticBlocksMaterialIndex];
+    }
+
     void FirstInstantiationOfStaticBlocks()
     {
+
+
         for (int i = 0; i < amountOfStaticBlocksToInstantiateAtStartup; i++)
         {
             GameObject newStaticBlock = Instantiate(staticBlockPrefab, transform.position, Quaternion.identity);
             allStaticBlocks.Add(newStaticBlock);
             newStaticBlock.transform.SetParent(transform);
+            newStaticBlock.GetComponent<MeshRenderer>().material = staticBlocksMaterial;
             newStaticBlock.SetActive(false);
         }
 
@@ -77,6 +107,7 @@ public class Pooling : MonoBehaviour
             GameObject newMovingBlock = Instantiate(movingBlockPrefab, transform.position, Quaternion.identity);
             allMovingBlocks.Add(newMovingBlock);
             newMovingBlock.transform.SetParent(transform);
+            newMovingBlock.GetComponent<MeshRenderer>().material = movingBlocksMaterial;
             newMovingBlock.SetActive(false);
         }
 
@@ -99,6 +130,7 @@ public class Pooling : MonoBehaviour
         if(allStaticBlocks.Count == 0)
         {
             GameObject newStaticBlock = Instantiate(staticBlockPrefab, position, rotation);
+            newStaticBlock.GetComponent<MeshRenderer>().material = staticBlocksMaterial;
             newStaticBlock.transform.SetParent(activeObjectsParent);
             return newStaticBlock;
         }
@@ -129,6 +161,7 @@ public class Pooling : MonoBehaviour
         if (allMovingBlocks.Count == 0)
         {
             GameObject newMovingBlock = Instantiate(movingBlockPrefab, position, rotation);
+            newMovingBlock.GetComponent<MeshRenderer>().material = movingBlocksMaterial;
             newMovingBlock.transform.SetParent(activeObjectsParent);
             return newMovingBlock;
         }

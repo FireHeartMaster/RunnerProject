@@ -59,6 +59,7 @@ public class GameplayManager : MonoBehaviour
         stats.GetComponent<DetectPlayerCollision>().StartDetectingCollisions();
         SoundManager.soundManager.StartBackgroundMusic();
         cameraFollow.CameraCanFollow();
+        obstacleManager.StartObstacleManager();
     }
 
     public void ResetGameplaymanager()
@@ -112,7 +113,7 @@ public class GameplayManager : MonoBehaviour
 
     private void Start()
     {
-        StartGame();
+        //StartGame();
         //currentGravityInversionInterval = minimumTimeToFirstInvertGravity + Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
 
         //Physics.gravity = new Vector3(0f, -9.81f, 0f);

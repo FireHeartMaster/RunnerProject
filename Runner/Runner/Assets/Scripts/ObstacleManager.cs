@@ -21,6 +21,8 @@ public class ObstacleManager : MonoBehaviour
     [SerializeField] float distanceAheadOfTarget = 30f;
 
     [SerializeField] Pooling pooling;
+
+    [SerializeField] Material[] materials;
     void LoadAllGrids()
     {
         foreach (GridScriptableObject grid in allGrids)
@@ -44,15 +46,15 @@ public class ObstacleManager : MonoBehaviour
         lastObstacleEndingPositionDown = 0f;
         lastObstacleEndingPositionUp = 0f;
 
-        if (obstaclesPosition == ObstaclesPosition.Down || obstaclesPosition == ObstaclesPosition.Both)
-        {
-            PutSetOfObstacles(1, 0);
-        }
+        //if (obstaclesPosition == ObstaclesPosition.Down || obstaclesPosition == ObstaclesPosition.Both)
+        //{
+        //    PutSetOfObstacles(1, 0);
+        //}
 
-        if (obstaclesPosition == ObstaclesPosition.Up || obstaclesPosition == ObstaclesPosition.Both)
-        {
-            PutSetOfObstacles(-1, 0);
-        }
+        //if (obstaclesPosition == ObstaclesPosition.Up || obstaclesPosition == ObstaclesPosition.Both)
+        //{
+        //    PutSetOfObstacles(-1, 0);
+        //}
     }
 
     private void Awake()
@@ -66,8 +68,11 @@ public class ObstacleManager : MonoBehaviour
 
 
     [SerializeField] float heightOfUpperObstacles = 5f;
-    private void Start()
+
+    public void StartObstacleManager()
     {
+
+
         if (obstaclesPosition == ObstaclesPosition.Down || obstaclesPosition == ObstaclesPosition.Both)
         {
             PutSetOfObstacles(1, 0);
@@ -77,6 +82,11 @@ public class ObstacleManager : MonoBehaviour
         {
             PutSetOfObstacles(-1, 0);
         }
+    }
+
+    private void Start()
+    {
+        
 
     }
     private void Update()
