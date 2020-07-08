@@ -6,6 +6,7 @@ using UnityEngine.PlayerLoop;
 public class MovePlayer : MonoBehaviour
 {
     [SerializeField] float speed = 5f;
+    float initialSpeed;
 
     [SerializeField] Vector3 forwardMoveDirection = Vector3.forward;
 
@@ -35,10 +36,53 @@ public class MovePlayer : MonoBehaviour
     [SerializeField] int numberOfBouncesOnReversingScaleBack = 2;
     [SerializeField, Range(1f, 2f)] float scaleMultiplierWhenBounceReversingScale = 1.2f;
 
+    Vector3 initialScale;
+    Vector3 initialPosition;
+
     [ContextMenu("Start Moving")]
     public void StartMoving()
     {
         canMove = true;
+
+        initialSpeed = speed;
+
+        initialScale = transform.localScale;
+        initialPosition = transform.position;
+    }
+
+    public void ResetMovePlayer()
+    {
+        speed = initialSpeed;
+
+        canMove = false;
+        jump = false;
+        timeSinceLastJump = minTimeBetweenJumps;
+        shouldTryToJump = false;
+
+        transform.localScale = initialScale;
+        originalScale = transform.localScale;
+
+        TrailRenderer trail = GetComponent<TrailRenderer>();
+        if (trail != null) trail.enabled = false;
+        transform.position = initialPosition;
+        if (trail != null) trail.enabled = true;
+
+        if (squash != null)
+        {
+            StopCoroutine(squash);
+        }
+
+        if (keepSquashed != null)
+        {
+            StopCoroutine(keepSquashed);
+        }
+
+        if (reverseSquash != null)
+        {
+            StopCoroutine(reverseSquash);
+        }
+
+        //StartMoving();
     }
 
     private void Awake()

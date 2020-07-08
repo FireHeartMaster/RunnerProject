@@ -23,6 +23,16 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] JitterText jitterText;
 
 
+    public void ResetPlayerStats()
+    {
+        isAlive = true;
+        amountOfPoints = 0;
+        Rigidbody playerRigidbody = GetComponent<Rigidbody>();
+        playerRigidbody.isKinematic = false;
+
+        pointsText.text = "0";
+    }
+
     public void HandleDeath()
     {
         Rigidbody playerRigidbody = GetComponent<Rigidbody>();

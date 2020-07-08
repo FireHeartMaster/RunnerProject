@@ -10,11 +10,15 @@ public class CameraFollow : MonoBehaviour
 
     public bool cameraCanFollow = false;
 
+
+    Vector3 initialPosition;
     public void CameraCanFollow()
     {
         cameraCanFollow = true;
 
         offset = target.position - transform.position;
+
+        initialPosition = transform.position;
     }
 
     private void Awake()
@@ -26,7 +30,8 @@ public class CameraFollow : MonoBehaviour
 
     public void CameraFollowReset()
     {
-
+        transform.position = initialPosition;
+        //CameraCanFollow();
     }
 
     private void LateUpdate()

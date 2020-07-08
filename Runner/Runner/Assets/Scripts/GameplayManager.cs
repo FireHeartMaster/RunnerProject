@@ -76,7 +76,26 @@ public class GameplayManager : MonoBehaviour
             StopCoroutine(deathScreenDelayedActivationCoroutine);
         }
 
+        gravityInversionAnimation.SetActive(false);
+
+        deathScreen.SetActive(false);
+        deathScreenNewRecordLabel.SetActive(false);
+
         StartGame();
+    }
+
+    [SerializeField] ObstacleManager obstacleManager;
+    public void ResetAll()
+    {
+        SoundManager.soundManager.ResetSounds();
+        stats.ResetPlayerStats();
+        stats.GetComponent<DetectPlayerCollision>().ResetDetectCollisions();
+        cameraFollow.CameraFollowReset();
+        stats.GetComponent<MovePlayer>().ResetMovePlayer();
+        Pooling.pooling.ResetPooling();
+        obstacleManager.ResetObstacleManager();
+
+        ResetGameplaymanager();
     }
 
     private void Awake()
@@ -261,8 +280,9 @@ public class GameplayManager : MonoBehaviour
 
     public void ReloadScene()
     {
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.buildIndex);
+        //Scene scene = SceneManager.GetActiveScene();
+        //SceneManager.LoadScene(scene.buildIndex);
+        ResetAll();
     }
 }
 

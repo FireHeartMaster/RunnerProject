@@ -24,6 +24,30 @@ public class Pooling : MonoBehaviour
 
     public static Pooling pooling;
 
+    public void ResetPooling()
+    {
+        while(activeObjectsParent.transform.childCount > 0)
+        {
+            MovingBlock movingBlock = activeObjectsParent.transform.GetChild(0).GetComponent<MovingBlock>();
+            if(movingBlock != null)
+            {
+                DestroyMovingBlock(movingBlock.gameObject);
+            }
+            else
+            {
+                Collectable collectable = activeObjectsParent.transform.GetChild(0).GetComponent<Collectable>();
+                if(collectable != null)
+                {
+                    DestroyCollectable(collectable.gameObject, collectable.type);
+                }
+                else
+                {
+                    DestroyStaticBlock(activeObjectsParent.transform.GetChild(0).gameObject);
+                }
+            }
+        }
+    }
+
     private void Awake()
     {
         FirstInstantiationOfStaticBlocks();

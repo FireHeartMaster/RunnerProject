@@ -21,6 +21,9 @@ public class DetectPlayerCollision : MonoBehaviour
 
     PlayerStats stats;
 
+    float initialSpeed;
+    Vector3 initialPosition;
+
     private void Awake()
     {
         //sineOfAngle = Mathf.Sin(maxAllowedAngle * Mathf.PI / 180f);
@@ -36,12 +39,37 @@ public class DetectPlayerCollision : MonoBehaviour
 
     public bool canStartDetectingCollisions = false;
 
+    IEnumerator delayCollisionDetectionCoroutine;
+
     [ContextMenu("Start Detecting Collisions")]
     public void StartDetectingCollisions()
     {
+        initialSpeed = speed;
+        initialPosition = transform.position;
         canStartDetectingCollisions = true;
-        IEnumerator delayCollisionDetectionCoroutine = DelayCollisionDetection();
+        delayCollisionDetectionCoroutine = DelayCollisionDetection();
         StartCoroutine(delayCollisionDetectionCoroutine);
+    }
+
+    public void ResetDetectCollisions()
+    {
+        speed = initialSpeed;
+
+        contactPoint = Vector3.zero;
+        previousPosition = Vector3.zero;
+        TrailRenderer trail = GetComponent<TrailRenderer>();
+        if (trail != null) trail.enabled = false;
+        transform.position = initialPosition;
+        if (trail != null) trail.enabled = true;
+
+        if (delayCollisionDetectionCoroutine != null)
+        {
+            StopCoroutine(delayCollisionDetectionCoroutine);
+        }
+
+        canDetectCollisions = false;
+        canStartDetectingCollisions = false;
+        //StartDetectingCollisions();
     }
 
     private void Start()

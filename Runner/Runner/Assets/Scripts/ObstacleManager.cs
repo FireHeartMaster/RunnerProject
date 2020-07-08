@@ -39,6 +39,22 @@ public class ObstacleManager : MonoBehaviour
         }
     }
 
+    public void ResetObstacleManager()
+    {
+        lastObstacleEndingPositionDown = 0f;
+        lastObstacleEndingPositionUp = 0f;
+
+        if (obstaclesPosition == ObstaclesPosition.Down || obstaclesPosition == ObstaclesPosition.Both)
+        {
+            PutSetOfObstacles(1, 0);
+        }
+
+        if (obstaclesPosition == ObstaclesPosition.Up || obstaclesPosition == ObstaclesPosition.Both)
+        {
+            PutSetOfObstacles(-1, 0);
+        }
+    }
+
     private void Awake()
     {
         LoadAllGrids();

@@ -1148,48 +1148,12 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!1 &837994048 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 872382843684280404, guid: 4f264945ffc779142bf53ec89c194ebc,
-    type: 3}
-  m_PrefabInstance: {fileID: 1249493848}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &837994049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 837994048}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 767ffa71eb7e65e46b370b832d07f1be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 6340401379641491571}
-  offset: {x: 0, y: 0, z: 0}
-  cameraCanFollow: 0
 --- !u!4 &837994052 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 872382843684280403, guid: 4f264945ffc779142bf53ec89c194ebc,
     type: 3}
   m_PrefabInstance: {fileID: 1249493848}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &837994053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 837994048}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 320ea40222c21e04d9db64166fac294e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 5
-  direction: {x: 0, y: 0, z: 1}
-  canMove: 1
 --- !u!1 &854051427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1907,7 +1871,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1180636977}
   - component: {fileID: 1180636979}
-  - component: {fileID: 1180636978}
   m_Layer: 0
   m_Name: CameraFollow
   m_TagString: Untagged
@@ -1930,21 +1893,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1180636978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1180636976}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 320ea40222c21e04d9db64166fac294e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 5
-  direction: {x: 0, y: 0, z: 1}
-  canMove: 1
 --- !u!114 &1180636979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2055,6 +2003,7 @@ MonoBehaviour:
   stats: {fileID: 998859961}
   canStartGame: 0
   cameraFollow: {fileID: 1180636979}
+  obstacleManager: {fileID: 999389899}
   timeToDelayDeathScreen: 0.1
   deathScreen: {fileID: 813125985}
   deathScreenPoints: {fileID: 1924830568}

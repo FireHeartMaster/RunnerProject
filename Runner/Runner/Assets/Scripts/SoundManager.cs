@@ -49,13 +49,42 @@ public class SoundManager : MonoBehaviour
         PlayNewBackgroundMusic();
     }
 
+    [ContextMenu("Reset Sounds")]
+    public void ResetSounds()
+    {
+        backgroundMusic.Stop();
+        inGameSounds.Stop();
+
+        timeSinceLastBackgroundMusicStarted = 0f;
+        lastBackgroundMusicDuration = 0f;
+        currentBackgroundMusicIndex = 0;
+        firstBackgroundMusic = true;
+        startMusic = false;
+
+        if(increaseVolumeCoroutine != null)
+        {
+            StopCoroutine(increaseVolumeCoroutine);
+        }
+
+        if(decreaseVolumeCoroutine != null)
+        {
+            StopCoroutine(decreaseVolumeCoroutine);
+        }
+
+        inGameSounds.volume = 1f;
+
+        canChangeBackgroundMusic = true;
+
+        //StartBackgroundMusic();
+    }
+
     private void Update()
     {
         if (startMusic)
         {
             timeSinceLastBackgroundMusicStarted += Time.deltaTime;
 
-            if (timeSinceLastBackgroundMusicStarted >= lastBackgroundMusicDuration && canChangeBackgroundMusic && canChangeBackgroundMusic)
+            if (timeSinceLastBackgroundMusicStarted >= lastBackgroundMusicDuration && canChangeBackgroundMusic/* && canChangeBackgroundMusic*/)
             {
                 timeSinceLastBackgroundMusicStarted = 0;
                 PlayNewBackgroundMusic();
