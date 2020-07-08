@@ -31,7 +31,18 @@ public class Pooling : MonoBehaviour
     public void ResetPooling()
     {
         ChooseMaterials();
-        while(activeObjectsParent.transform.childCount > 0)
+
+        for (int i = 0; i < allStaticBlocks.Count; i++)
+        {
+            allStaticBlocks[i].GetComponent<MeshRenderer>().material = staticBlocksMaterial;
+        }
+
+        for (int i = 0; i < allMovingBlocks.Count; i++)
+        {
+            allMovingBlocks[i].GetComponent<MeshRenderer>().material = movingBlocksMaterial;
+        }
+
+        while (activeObjectsParent.transform.childCount > 0)
         {
             MovingBlock movingBlock = activeObjectsParent.transform.GetChild(0).GetComponent<MovingBlock>();
             if(movingBlock != null)
@@ -86,7 +97,7 @@ public class Pooling : MonoBehaviour
             movingBlocksMaterialIndex = Random.Range(0, materials.Length);
             trials++;
         } while (trials < maxTrials && movingBlocksMaterialIndex == staticBlocksMaterialIndex);
-        movingBlocksMaterial = materials[staticBlocksMaterialIndex];
+        movingBlocksMaterial = materials[movingBlocksMaterialIndex];
     }
 
     void FirstInstantiationOfStaticBlocks()
@@ -155,7 +166,7 @@ public class Pooling : MonoBehaviour
     }
 
 
-    public GameObject InstantiateMovingBlock(Vector3 position, Quaternion rotation)
+    public GameObject InstantiateMovingBlock(Vector3 position, Quaternion rotation, int upDownReference, int direction)
     {
         //return Instantiate(staticBlockPrefab, position, rotation);
         if (allMovingBlocks.Count == 0)
@@ -163,6 +174,8 @@ public class Pooling : MonoBehaviour
             GameObject newMovingBlock = Instantiate(movingBlockPrefab, position, rotation);
             newMovingBlock.GetComponent<MeshRenderer>().material = movingBlocksMaterial;
             newMovingBlock.transform.SetParent(activeObjectsParent);
+            newMovingBlock.GetComponent<MovingBlock>().Setup(upDownReference, direction);
+            //newMovingBlock.GetComponent<MovingBlock>().Setup();
             return newMovingBlock;
         }
         else
@@ -173,6 +186,8 @@ public class Pooling : MonoBehaviour
             newMovingBlock.transform.position = position;
             newMovingBlock.transform.rotation = rotation;
             allMovingBlocks.RemoveAt(allMovingBlocks.Count - 1);
+            newMovingBlock.GetComponent<MovingBlock>().Setup(upDownReference, direction);
+            //newMovingBlock.GetComponent<MovingBlock>().Setup();
             return newMovingBlock;
         }
     }

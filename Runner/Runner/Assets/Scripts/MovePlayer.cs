@@ -48,6 +48,8 @@ public class MovePlayer : MonoBehaviour
 
         initialScale = transform.localScale;
         initialPosition = transform.position;
+
+        rigidbody.isKinematic = false;
     }
 
     public void ResetMovePlayer()

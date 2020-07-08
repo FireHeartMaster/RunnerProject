@@ -1466,6 +1466,8 @@ MonoBehaviour:
   allGrids:
   - {fileID: 11400000, guid: 2cea04ec3ad5e124f8aa18f1dfd027aa, type: 2}
   - {fileID: 11400000, guid: 06f8cc579c76e5f488a15c57770fb15a, type: 2}
+  - {fileID: 11400000, guid: 6f34ffef9dee1c343b46ceb30b8d0c18, type: 2}
+  tutorialGrid: {fileID: 11400000, guid: 2cea04ec3ad5e124f8aa18f1dfd027aa, type: 2}
   obstaclesPosition: 2
   staticBlockPrefab: {fileID: 1180602404078932270, guid: 8ab50caa8bfca4f429f0eb108d7ef13d,
     type: 3}
@@ -1480,6 +1482,8 @@ MonoBehaviour:
   materials:
   - {fileID: 2100000, guid: ec8cc910d2d8dbd4ea0b4cecdf397a8b, type: 2}
   heightOfUpperObstacles: 5
+  numberOfTimesToShowTutorial: 3
+  showTutorialIfNeeded: 0
   collectableRotation: {x: 32, y: 33, z: 51}
 --- !u!4 &999389900
 Transform:
@@ -3805,6 +3809,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5512345578020582570, guid: 83aa3bb57922509478faaf17048d06c6,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5512345578020582570, guid: 83aa3bb57922509478faaf17048d06c6,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5512345578020582572, guid: 83aa3bb57922509478faaf17048d06c6,
         type: 3}
