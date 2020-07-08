@@ -50,6 +50,8 @@ public class MovePlayer : MonoBehaviour
         initialPosition = transform.position;
 
         rigidbody.isKinematic = false;
+
+        ballReferencePoint = transform.position;
     }
 
     public void ResetMovePlayer()
@@ -96,6 +98,109 @@ public class MovePlayer : MonoBehaviour
         originalScale = transform.localScale;
     }
 
+    Vector3 ballReferencePoint;
+    Vector3 playerReferencePoint;
+    Vector3 displacedPoint;
+
+    Vector2 touchStartPoint;
+    Vector2 touchEndPoint;
+
+    Touch touch;
+
+    [SerializeField] float minTimeToConsiderLongTouch = 0.3f;
+
+    enum TouchState
+    {
+        shortTouch, 
+        longTouch,
+        notTouching
+    }
+
+    TouchState touchState = TouchState.notTouching;
+    Vector2 touchInitialPosition;
+    [SerializeField] float minSpeedToConsiderLongTouch = 10f;
+
+    float timeWhenLastTouchBegan = 0f;
+    Vector2 lastTouchPosition;
+    void HandleTouchInput()
+    {
+        if(Input.touchCount > 0)
+        {
+            touch = Input.GetTouch(0);
+
+            lastTouchPosition = touch.position;
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                timeWhenLastTouchBegan = Time.time;
+                touchInitialPosition = touch.position;
+                touchStartPoint = touch.position;
+
+                //ballReferencePoint = Camera.main.ScreenToWorldPoint(touchInitialPosition);
+                ballReferencePoint = transform.position;
+            }
+            else if(touch.phase == TouchPhase.Moved)
+            {
+                if (Time.time - timeWhenLastTouchBegan > minTimeToConsiderLongTouch)
+                {
+                    if (touchState != TouchState.longTouch)
+                    {
+                        touchState = TouchState.longTouch;
+                        playerReferencePoint = Camera.main.ScreenToWorldPoint(touchInitialPosition);
+                        //ballReferencePoint = transform.position;
+                        //ballReferencePoint = 
+                    }
+                    else
+                    {
+                        displacedPoint = Camera.main.ScreenToWorldPoint(lastTouchPosition);
+                        transform.position = new Vector3(ballReferencePoint.x + (displacedPoint.x - playerReferencePoint.x), transform.position.y, transform.position.z);
+                    }
+
+                }
+                //if((lastTouchPosition.y > touchInitialPosition.y && Vector2.Angle(Vector2.up, (lastTouchPosition - touchInitialPosition)) > 60f) ||
+                //    (lastTouchPosition.y < touchInitialPosition.y && Vector2.Angle(Vector2.down, (lastTouchPosition - touchInitialPosition)) > 60f))
+                //{
+                //    //move sideways
+                //    transform.position = new Vector3(ballReferencePoint.x + (displacedPoint.x - playerReferencePoint.x), transform.position.y, transform.position.z);
+
+                //}
+            }
+            else if (touch.phase == TouchPhase.Ended)
+            {
+                if (Time.time - timeWhenLastTouchBegan < minTimeToConsiderLongTouch)
+                {
+                    if(lastTouchPosition.y > touchInitialPosition.y && Vector2.Angle(Vector2.up, (lastTouchPosition - touchInitialPosition)) < 45f)
+                    {
+                        //jump
+                        jumpWill = true;
+                    }
+                    else if (lastTouchPosition.y < touchInitialPosition.y && Vector2.Angle(Vector2.down, (lastTouchPosition - touchInitialPosition)) < 45f)
+                    {
+                        //squash
+                        shouldSquash = true;
+                    }
+                }
+                else
+                {
+                    //ballReferencePoint = Camera.main.ScreenToWorldPoint(lastTouchPosition);
+                }
+
+
+                touchState = TouchState.notTouching;
+
+
+
+            }
+
+        }
+        else
+        {
+            transform.position = new Vector3(ballReferencePoint.x, transform.position.y, transform.position.z);
+        }
+    }
+
+    bool shouldSquash = false;
+    bool jumpWill = false;
     private void Update()
     {
         //transform.position += forwardMoveDirection * speed * Time.fixedDeltaTime;
@@ -104,16 +209,22 @@ public class MovePlayer : MonoBehaviour
         //    TryToJump();
         //}
 
+        Debug.Log("input count: " + Input.touchCount);
+
         if (canMove)
         {
             timeSinceLastJump += Time.deltaTime;
 
-            if (canMove && Input.GetKeyDown(KeyCode.DownArrow))
+            shouldSquash = false;
+            jumpWill = false;
+            HandleTouchInput();
+
+            if (canMove && (Input.GetKeyDown(KeyCode.DownArrow) || shouldSquash))
             {
                 Squash();
             }
 
-            if (canMove && Input.GetButtonDown("Jump") && timeSinceLastJump >= minTimeBetweenJumps)
+            if (canMove && (Input.GetButtonDown("Jump") || jumpWill) && timeSinceLastJump >= minTimeBetweenJumps)
             {
                 shouldTryToJump = true;
             }
@@ -305,5 +416,7 @@ public class MovePlayer : MonoBehaviour
 
         transform.localScale = originalScale;
     }
+
+
 
 }
