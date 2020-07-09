@@ -138,8 +138,7 @@ public class MovePlayer : MonoBehaviour
         if ((!simulate && Input.touchCount > 0) || (simulate && Input.GetMouseButton(0)))
         {
             touch = !simulate && Input.touchCount > 0 ? Input.GetTouch(0) : new Touch();
-
-            testText.text = "x: " + (!simulate ? touch.position.x : Input.mousePosition.x) + ", " + "y: " + (!simulate ? touch.position.y : Input.mousePosition.y);
+            
             lastTouchPosition = !simulate ? touch.position : new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 
             if ((!simulate && touch.phase == TouchPhase.Began) || (simulate && Input.GetMouseButtonDown(0)))
@@ -257,16 +256,12 @@ public class MovePlayer : MonoBehaviour
 
 
 
-            }
-
-            testText.text = "no touch recognized";            
+            }                       
             touchState = TouchState.notTouching;
 
         }
         previousMouseTouching = Input.GetMouseButton(0);
     }
-    [SerializeField] TextMeshProUGUI testText;
-    [SerializeField] TextMeshProUGUI testText2;
     bool shouldSquash = false;
     bool jumpWill = false;
     private void Update()
