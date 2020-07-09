@@ -20,7 +20,8 @@ public class CameraFlyToPosition : MonoBehaviour
             Vector3 move = (target.position - transform.position).normalized * flySpeed * Time.deltaTime;
             transform.position += move;
 
-            if((target.position - transform.position).sqrMagnitude <= distanceToStop * distanceToStop)
+            //if((target.position - transform.position).sqrMagnitude <= distanceToStop * distanceToStop)
+            if ((target.position.y - transform.position.y) < distanceToStop)
             {
                 canFlyToPosition = false;
                 transform.position = target.position;

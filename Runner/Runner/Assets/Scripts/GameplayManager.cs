@@ -36,6 +36,8 @@ public class GameplayManager : MonoBehaviour
 
     [SerializeField] CameraFollow cameraFollow;
 
+    TutorialState tutorialState = TutorialState.state0;
+
     [ContextMenu("Start Game")]
     public void StartGame()
     {
@@ -81,6 +83,8 @@ public class GameplayManager : MonoBehaviour
 
         deathScreen.SetActive(false);
         deathScreenNewRecordLabel.SetActive(false);
+
+        tutorialState = TutorialState.state0;
 
         StartGame();
     }
@@ -251,7 +255,7 @@ public class GameplayManager : MonoBehaviour
         BinaryFormatter bf = new BinaryFormatter();
         //FileStream file = File.Create(Application.persistentDataPath
         //             + "/PlayerBest.dat");
-        FileStream file = File.Create(Path.Combine(Application.persistentDataPath, "/PlayerBest.dat"));
+        FileStream file = File.Create(Path.Combine(Application.persistentDataPath, "PlayerBest.dat"));
         SaveData data = new SaveData();
         data.maxPoints = points;
         bf.Serialize(file, data);
@@ -263,14 +267,14 @@ public class GameplayManager : MonoBehaviour
         SaveData loadedData = new SaveData();
         //if (File.Exists(Application.persistentDataPath
         //           + "/PlayerBest.dat"))
-        if (File.Exists(Path.Combine(Application.persistentDataPath, "/PlayerBest.dat")))
+        if (File.Exists(Path.Combine(Application.persistentDataPath, "PlayerBest.dat")))
         {
             BinaryFormatter bf = new BinaryFormatter();
             //FileStream file =
             //           File.Open(Application.persistentDataPath
             //           + "/PlayerBest.dat", FileMode.Open);
             FileStream file =
-                       File.Open(Path.Combine(Application.persistentDataPath, "/PlayerBest.dat"), FileMode.Open);
+                       File.Open(Path.Combine(Application.persistentDataPath, "PlayerBest.dat"), FileMode.Open);
             SaveData data = (SaveData)bf.Deserialize(file);
             file.Close();
             loadedData.maxPoints = data.maxPoints;
@@ -285,8 +289,39 @@ public class GameplayManager : MonoBehaviour
         //SceneManager.LoadScene(scene.buildIndex);
         ResetAll();
     }
+
+    void SetSpeed(float value)
+    {
+        stats.GetComponent<MovePlayer>().speed = value;
+        stats.GetComponent<DetectPlayerCollision>().speed = value;
+    }
+
+    [ContextMenu("Time scale 0")]
+    void TimeScaleZero()
+    {
+        Time.timeScale = 0f;
+    }
+
+    [ContextMenu("Time scale 1")]
+    void TimeScaleOne()
+    {
+        Time.timeScale = 1f;
+    }
+    [SerializeField] GameObject[] tutorialObjects;
+    //IEnumerator ShowTutorialCoroutine()
+    //{
+        
+    //}
 }
 
+public enum TutorialState
+{
+    state0,
+    state1,
+    state2,
+    state3,
+    state4
+}
 
 
 

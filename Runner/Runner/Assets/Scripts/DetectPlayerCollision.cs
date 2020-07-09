@@ -24,6 +24,10 @@ public class DetectPlayerCollision : MonoBehaviour
     float initialSpeed;
     Vector3 initialPosition;
 
+    [SerializeField] float sphereRadius = 0.5f;
+    [SerializeField] float radiusAllowance = 0.1f;
+    [SerializeField] LayerMask layerMask;
+
     private void Awake()
     {
         //sineOfAngle = Mathf.Sin(maxAllowedAngle * Mathf.PI / 180f);
@@ -81,6 +85,7 @@ public class DetectPlayerCollision : MonoBehaviour
     {
         yield return new WaitForSeconds(timeAfterStartupToBeginDetectingCollisions);
         canDetectCollisions = true;
+        Debug.Log("DelayCollisionDetection");
     }
 
     Vector3 contactPoint = Vector3.zero;
@@ -93,11 +98,15 @@ public class DetectPlayerCollision : MonoBehaviour
         {
             float forwardSpeed = (transform.position.z - previousPosition.z) / Time.fixedDeltaTime;
 
+            //Debug.Log("z: " + transform.position.z + "previous z: " + previousPosition.z);
+            //Debug.Log("delta: " + (transform.position.z - previousPosition.z));
+            //Debug.Log("speed: " + ((transform.position.z - previousPosition.z) / Time.fixedDeltaTime));
             previousPosition = transform.position;
             //Debug.Log("forwardSpeed: " + forwardSpeed);
 
             if (forwardSpeed < speed - allowance && canDetectCollisions)
             {
+                //Debug.Log("canDetectCollisions");
                 if (stats.isAlive)
                 {
                     Debug.Log("Player lost - forwardSpeed: " + forwardSpeed);
@@ -105,6 +114,20 @@ public class DetectPlayerCollision : MonoBehaviour
                     stats.HandleDeath();
                 }
             }
+
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.right, out hit, (sphereRadius - radiusAllowance) * transform.localScale.x, layerMask) ||
+                Physics.Raycast(transform.position, Vector3.left, out hit, (sphereRadius - radiusAllowance) * transform.localScale.x, layerMask))
+            {
+                if (stats.isAlive)
+                {
+                    Debug.Log("Player lost - side wall collision");
+                    stats.isAlive = false;
+                    stats.HandleDeath();
+                }
+            }
+
+
         }
     }
 

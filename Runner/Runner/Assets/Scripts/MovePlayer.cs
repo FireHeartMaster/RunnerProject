@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
 public class MovePlayer : MonoBehaviour
 {
-    [SerializeField] float speed = 5f;
+    public float speed = 5f;
     float initialSpeed;
 
     [SerializeField] Vector3 forwardMoveDirection = Vector3.forward;
@@ -52,6 +53,10 @@ public class MovePlayer : MonoBehaviour
         rigidbody.isKinematic = false;
 
         ballReferencePoint = transform.position;
+        moveDirection = new Vector3(ballReferencePoint.x, 0f, 0f);
+        displacedPoint = transform.position;
+        playerReferencePoint = transform.position;
+        //Debug.Log("at start x: " + moveDirection.x);
     }
 
     public void ResetMovePlayer()
@@ -111,7 +116,7 @@ public class MovePlayer : MonoBehaviour
 
     enum TouchState
     {
-        shortTouch, 
+        shortTouch,
         longTouch,
         notTouching
     }
@@ -122,40 +127,79 @@ public class MovePlayer : MonoBehaviour
 
     float timeWhenLastTouchBegan = 0f;
     Vector2 lastTouchPosition;
-    void HandleTouchInput()
+
+    bool previousMouseTouching = false;
+
+    float ScreenToWorldHorizontal(float screenPositionX, float trackWidth)
     {
-        if(Input.touchCount > 0)
+        return (screenPositionX / Screen.width - 0.5f) /** 2f*/ * trackWidth;
+    }
+
+    [SerializeField] float minXToConsiderSideSwipe = 5f;
+    [SerializeField] float percentOfScreenToConsiderSideSwipe = 0.025f;
+    void HandleTouchInput(bool simulate = false)
+    {
+        //testText2.text = "Testing";
+        //Vector2 v = Input.mousePosition;
+        //Debug.Log("mouse pos: " + v.x + " " + v.y);
+        //Camera c = Camera.main;
+        //Debug.LoPoint(Input.mousePosition);
+        //Debug.Log("world pos: " + v3.x + " " + v3.y + " " + v3.z);
+        //testText2.text = "x: " + Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7f)).x + ", y:" + Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7f)).y + ", z:" + Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7f)).z;
+        if ((!simulate && Input.touchCount > 0) || (simulate && Input.GetMouseButton(0)))
         {
-            touch = Input.GetTouch(0);
+            touch = !simulate && Input.touchCount > 0 ? Input.GetTouch(0) : new Touch();
 
-            lastTouchPosition = touch.position;
+            testText.text = "x: " + (!simulate ? touch.position.x : Input.mousePosition.x) + ", " + "y: " + (!simulate ? touch.position.y : Input.mousePosition.y);
+            lastTouchPosition = !simulate ? touch.position : new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 
-            if (touch.phase == TouchPhase.Began)
+            if ((!simulate && touch.phase == TouchPhase.Began) || (simulate && Input.GetMouseButtonDown(0)))
             {
                 timeWhenLastTouchBegan = Time.time;
-                touchInitialPosition = touch.position;
-                touchStartPoint = touch.position;
+                touchInitialPosition = !simulate ? touch.position : new Vector2(Input.mousePosition.x, Input.mousePosition.y); ;
+                touchStartPoint = !simulate ? touch.position : new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 
                 //ballReferencePoint = Camera.main.ScreenToWorldPoint(touchInitialPosition);
                 ballReferencePoint = transform.position;
-            }
-            else if(touch.phase == TouchPhase.Moved)
-            {
-                if (Time.time - timeWhenLastTouchBegan > minTimeToConsiderLongTouch)
-                {
-                    if (touchState != TouchState.longTouch)
-                    {
-                        touchState = TouchState.longTouch;
-                        playerReferencePoint = Camera.main.ScreenToWorldPoint(touchInitialPosition);
-                        //ballReferencePoint = transform.position;
-                        //ballReferencePoint = 
-                    }
-                    else
-                    {
-                        displacedPoint = Camera.main.ScreenToWorldPoint(lastTouchPosition);
-                        transform.position = new Vector3(ballReferencePoint.x + (displacedPoint.x - playerReferencePoint.x), transform.position.y, transform.position.z);
-                    }
 
+                playerReferencePoint = new Vector3(ScreenToWorldHorizontal(touchInitialPosition.x, 5f), 0f, 0f);
+            }
+            else if ((!simulate && touch.phase == TouchPhase.Moved) || (simulate && !Input.GetMouseButtonDown(0) && Input.GetMouseButton(0)))
+            {
+                //if (Time.time - timeWhenLastTouchBegan > minTimeToConsiderLongTouch)
+
+                //if (Mathf.Abs(lastTouchPosition.x - touchInitialPosition.x) > minXToConsiderSideSwipe && touchState != TouchState.longTouch)
+                    if (Mathf.Abs(lastTouchPosition.x - touchInitialPosition.x) > percentOfScreenToConsiderSideSwipe * Screen.width && touchState != TouchState.longTouch)
+                    {
+                    touchState = TouchState.longTouch;
+                    //playerReferencePoint = Camera.main.ScreenToWorldPoint(touchInitialPosition);
+                    playerReferencePoint = new Vector3(ScreenToWorldHorizontal(touchInitialPosition.x, 5f), 0f, 0f);
+                    //if (touchState != TouchState.longTouch)
+                    //{
+                    //    touchState = TouchState.longTouch;
+                    //    //playerReferencePoint = Camera.main.ScreenToWorldPoint(touchInitialPosition);
+                    //    playerReferencePoint = new Vector3(ScreenToWorldHorizontal(touchInitialPosition.x, 5f), 0f, 0f);
+                    //    //ballReferencePoint = transform.position;
+                    //    //ballReferencePoint = 
+                    //}
+                    //else
+                    //{
+                    //    //displacedPoint = Camera.main.ScreenToWorldPoint(lastTouchPosition);
+                    //    //transform.position = new Vector3(ballReferencePoint.x + (displacedPoint.x - playerReferencePoint.x), transform.position.y, transform.position.z);
+                    //    //moveDirection = new Vector3(ballReferencePoint.x + (displacedPoint.x - playerReferencePoint.x), transform.position.y, transform.position.z);
+                    //    //moveDirection = new Vector3(displacedPoint.x - playerReferencePoint.x, 0f, 0f);
+                    //}
+                    ////displacedPoint = Camera.main.ScreenToWorldPoint(lastTouchPosition);
+                    //displacedPoint = new Vector3(ScreenToWorldHorizontal(lastTouchPosition.x, 5f), 0f, 0f);
+
+                    //moveDirection += new Vector3(displacedPoint.x - playerReferencePoint.x, 0f, 0f);
+
+                }
+                else if (touchState == TouchState.longTouch)
+                {
+                    displacedPoint = new Vector3(ScreenToWorldHorizontal(lastTouchPosition.x, 5f), 0f, 0f);
+
+                    moveDirection += new Vector3(displacedPoint.x - playerReferencePoint.x, 0f, 0f);
                 }
                 //if((lastTouchPosition.y > touchInitialPosition.y && Vector2.Angle(Vector2.up, (lastTouchPosition - touchInitialPosition)) > 60f) ||
                 //    (lastTouchPosition.y < touchInitialPosition.y && Vector2.Angle(Vector2.down, (lastTouchPosition - touchInitialPosition)) > 60f))
@@ -165,24 +209,47 @@ public class MovePlayer : MonoBehaviour
 
                 //}
             }
-            else if (touch.phase == TouchPhase.Ended)
+            else if ((!simulate && touch.phase == TouchPhase.Ended) || (simulate && Input.GetMouseButtonUp(0)))
             {
+                //Debug.LogError("Touch Ended");
+                //Debug.LogError("delta time: " + (Time.time - timeWhenLastTouchBegan));
+
                 if (Time.time - timeWhenLastTouchBegan < minTimeToConsiderLongTouch)
+                //if (Mathf.Abs(lastTouchPosition.x - touchInitialPosition.x) < minXToConsiderSideSwipe)
+                //if (Mathf.Abs(lastTouchPosition.x - touchInitialPosition.x) < percentOfScreenToConsiderSideSwipe * Screen.width)
                 {
-                    if(lastTouchPosition.y > touchInitialPosition.y && Vector2.Angle(Vector2.up, (lastTouchPosition - touchInitialPosition)) < 45f)
+                    //Debug.LogError("lastTouchPosition.y: " + lastTouchPosition.y + ", touchInitialPosition.y: " + touchInitialPosition.y);
+                    if (lastTouchPosition.y > touchInitialPosition.y && Vector2.Angle(Vector2.up, (lastTouchPosition - touchInitialPosition)) < 45f)
                     {
-                        //jump
-                        jumpWill = true;
+                        if (Mathf.Sign(Physics.gravity.y) < 0f)
+                        {
+                            //jump
+                            jumpWill = true;
+                        }
+                        else
+                        {
+                            //squash
+                            shouldSquash = true;
+                        }
                     }
                     else if (lastTouchPosition.y < touchInitialPosition.y && Vector2.Angle(Vector2.down, (lastTouchPosition - touchInitialPosition)) < 45f)
                     {
-                        //squash
-                        shouldSquash = true;
+                        if (Mathf.Sign(Physics.gravity.y) < 0f)
+                        {
+                            //squash
+                            shouldSquash = true;
+                        }
+                        else
+                        {
+                            //jump
+                            jumpWill = true;
+                        }
                     }
                 }
                 else
                 {
                     //ballReferencePoint = Camera.main.ScreenToWorldPoint(lastTouchPosition);
+                    ballReferencePoint = transform.position;
                 }
 
 
@@ -195,10 +262,68 @@ public class MovePlayer : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(ballReferencePoint.x, transform.position.y, transform.position.z);
-        }
-    }
 
+
+            if ((!simulate && touch.phase == TouchPhase.Ended) || (simulate && Input.GetMouseButtonUp(0)))
+            {
+                //Debug.LogError("Touch Ended");
+                //Debug.LogError("delta time: " + (Time.time - timeWhenLastTouchBegan));
+
+                if (Time.time - timeWhenLastTouchBegan < minTimeToConsiderLongTouch)
+                //if (Mathf.Abs(lastTouchPosition.x - touchInitialPosition.x) < minXToConsiderSideSwipe)
+                //if (Mathf.Abs(lastTouchPosition.x - touchInitialPosition.x) < percentOfScreenToConsiderSideSwipe * Screen.width)
+                {
+                    //Debug.LogError("lastTouchPosition.y: " + lastTouchPosition.y + ", touchInitialPosition.y: " + touchInitialPosition.y);
+                    if (lastTouchPosition.y > touchInitialPosition.y && Vector2.Angle(Vector2.up, (lastTouchPosition - touchInitialPosition)) < 45f)
+                    {
+                        if (Mathf.Sign(Physics.gravity.y) < 0f)
+                        {
+                            //jump
+                            jumpWill = true;
+                        }
+                        else
+                        {
+                            //squash
+                            shouldSquash = true;
+                        }
+                    }
+                    else if (lastTouchPosition.y < touchInitialPosition.y && Vector2.Angle(Vector2.down, (lastTouchPosition - touchInitialPosition)) < 45f)
+                    {
+                        if (Mathf.Sign(Physics.gravity.y) < 0f)
+                        {
+                            //squash
+                            shouldSquash = true;
+                        }
+                        else
+                        {
+                            //jump
+                            jumpWill = true;
+                        }
+                    }
+                }
+                else
+                {
+                    //ballReferencePoint = Camera.main.ScreenToWorldPoint(lastTouchPosition);
+                    ballReferencePoint = transform.position;
+                }
+
+
+                touchState = TouchState.notTouching;
+
+
+
+            }
+
+            testText.text = "no touch recognized";
+            //transform.position = new Vector3(ballReferencePoint.x, transform.position.y, transform.position.z);
+            //moveDirection = new Vector3(ballReferencePoint.x, transform.position.y, transform.position.z);
+            touchState = TouchState.notTouching;
+
+        }
+        previousMouseTouching = Input.GetMouseButton(0);
+    }
+    [SerializeField] TextMeshProUGUI testText;
+    [SerializeField] TextMeshProUGUI testText2;
     bool shouldSquash = false;
     bool jumpWill = false;
     private void Update()
@@ -209,7 +334,7 @@ public class MovePlayer : MonoBehaviour
         //    TryToJump();
         //}
 
-        Debug.Log("input count: " + Input.touchCount);
+        //Debug.Log("input count: " + Input.touchCount);
 
         if (canMove)
         {
@@ -217,7 +342,12 @@ public class MovePlayer : MonoBehaviour
 
             shouldSquash = false;
             jumpWill = false;
-            HandleTouchInput();
+            //moveDirection = new Vector3(ballReferencePoint.x, transform.position.y, transform.position.z); //transform.position;
+            //moveDirection = new Vector3(ballReferencePoint.x, transform.position.y, transform.position.z); //transform.position;
+            //moveDirection = new Vector3(ballReferencePoint.x, 0f, 0f); //transform.position;
+            moveDirection = Vector3.zero; //transform.position;
+            HandleTouchInput(true);
+            moveDirection += new Vector3(ballReferencePoint.x, 0f, 0f); //transform.position;
 
             if (canMove && (Input.GetKeyDown(KeyCode.DownArrow) || shouldSquash))
             {
@@ -230,16 +360,23 @@ public class MovePlayer : MonoBehaviour
             }
         }
     }
+
+    Vector3 moveDirection;
     private void FixedUpdate()
     {
         if (canMove)
         {
-            Vector3 moveDirection = Vector3.zero;
+            //moveDirection = Vector3.zero;
 
             if (canMove)
             {
+                //moveDirection += new Vector3(0f, transform.position.y, transform.position.z);
+                moveDirection.y = transform.position.y;
+                moveDirection.z = transform.position.z;
                 moveDirection += forwardMoveDirection * speed * Time.fixedDeltaTime;
+                //Debug.Log("before x: " + moveDirection.x);
                 moveDirection += Input.GetAxis("Horizontal") * sideSpeed * Vector3.right * Time.fixedDeltaTime;
+                //Debug.Log("after x: " + moveDirection.x);
             }
 
 
@@ -268,13 +405,15 @@ public class MovePlayer : MonoBehaviour
                 shouldTryToJump = false;
                 TryToJump();
             }
-        }       
+        }
     }
     bool shouldTryToJump = false;
 
     void Move(Vector3 moveDirection)
     {
-        rigidbody.MovePosition(transform.position + moveDirection);
+        //rigidbody.MovePosition(transform.position + moveDirection);
+        //Debug.Log("moving x: " + moveDirection.x);
+        rigidbody.MovePosition(moveDirection);
     }
 
     [SerializeField] float offsetForJumpCheckRaycast = 0.05f;
@@ -314,15 +453,15 @@ public class MovePlayer : MonoBehaviour
     IEnumerator reverseSquash;
     void Squash()
     {
-        if(squash != null)
+        if (squash != null)
             StopCoroutine(squash);
-        
+
         if (keepSquashed != null)
             StopCoroutine(keepSquashed);
-        
+
         if (reverseSquash != null)
             StopCoroutine(reverseSquash);
-        
+
         squash = SquashCoroutine();
         StartCoroutine(squash);
     }
@@ -352,7 +491,7 @@ public class MovePlayer : MonoBehaviour
     {
         //Debug.Log("KeepSquashed");
         float timeSinceCall = 0f;
-        while(timeSinceCall < timeToKeepReducedScale)
+        while (timeSinceCall < timeToKeepReducedScale)
         {
             timeSinceCall += Time.deltaTime;
             //Debug.Log("timeSinceCall: " + timeSinceCall);
@@ -368,8 +507,8 @@ public class MovePlayer : MonoBehaviour
         //Debug.Log("ReverseSquash");
         float verticalScaleChangeSpeed = (originalScale.y - originalScale.y * verticalPercentOfOriginalScaleWhenReducingScale) / timeToReverseScaleBack;
         float horizontalScaleChangeSpeed = (originalScale.x * (horizontalPercentOfOriginalScaleWhenReducingScale + 1f) - originalScale.x) / timeToReverseScaleBack;
-    
-        while(transform.localScale.y < originalScale.y)
+
+        while (transform.localScale.y < originalScale.y)
         {
             Vector3 localScale = transform.localScale;
             localScale.y += (verticalScaleChangeSpeed) * Time.deltaTime;
@@ -386,14 +525,14 @@ public class MovePlayer : MonoBehaviour
 
         while (/*((goingUp && (transform.localScale.y < originalScale.y * scaleMultiplierWhenBounceReversingScale)) || (!goingUp && (transform.localScale.y > originalScale.y * (1f - (scaleMultiplierWhenBounceReversingScale - 1f))))) &&*/ numberOfCycles < numberOfBouncesOnReversingScaleBack)
         {
-            
+
 
             Vector3 localScale = transform.localScale;
             localScale.y += (verticalScaleChangeSpeed) * Time.deltaTime * directionMutiplier;
             localScale.x -= horizontalScaleChangeSpeed * Time.deltaTime * directionMutiplier;
             localScale.z -= horizontalScaleChangeSpeed * Time.deltaTime * directionMutiplier;
 
-            if(transform.localScale.y < originalScale.y && localScale.y >= originalScale.y)
+            if (transform.localScale.y < originalScale.y && localScale.y >= originalScale.y)
             {
                 numberOfCycles++;
             }
@@ -402,12 +541,12 @@ public class MovePlayer : MonoBehaviour
 
             yield return new WaitForSeconds(Time.deltaTime);
 
-            if((goingUp && (transform.localScale.y >= originalScale.y * scaleMultiplierWhenBounceReversingScale)))
+            if ((goingUp && (transform.localScale.y >= originalScale.y * scaleMultiplierWhenBounceReversingScale)))
             {
                 goingUp = false;
                 directionMutiplier = -1;
             }
-            else if((!goingUp && (transform.localScale.y <= originalScale.y * (1f - (scaleMultiplierWhenBounceReversingScale - 1f)))))
+            else if ((!goingUp && (transform.localScale.y <= originalScale.y * (1f - (scaleMultiplierWhenBounceReversingScale - 1f)))))
             {
                 goingUp = true;
                 directionMutiplier = 1;
@@ -416,7 +555,27 @@ public class MovePlayer : MonoBehaviour
 
         transform.localScale = originalScale;
     }
-
-
-
 }
+
+    //IEnumerator ReverseSquash()
+    //{
+    //    //Debug.Log("ReverseSquash");
+    //    float verticalScaleChangeSpeed = (originalScale.y - originalScale.y * verticalPercentOfOriginalScaleWhenReducingScale) / timeToReverseScaleBack;
+    //    float horizontalScaleChangeSpeed = (originalScale.x * (horizontalPercentOfOriginalScaleWhenReducingScale + 1f) - originalScale.x) / timeToReverseScaleBack;
+
+//    while(transform.localScale.y < originalScale.y)
+//    {
+//        Vector3 localScale = transform.localScale;
+//        localScale.y += (verticalScaleChangeSpeed) * Time.deltaTime;
+//        localScale.x -= horizontalScaleChangeSpeed * Time.deltaTime;
+//        localScale.z -= horizontalScaleChangeSpeed * Time.deltaTime;
+//        transform.localScale = localScale;
+
+//        yield return new WaitForSeconds(Time.deltaTime);
+//    }
+
+//    bool goingUp = true;
+//    int numberOfCycles = 0;
+//    int directionMutiplier = 1;
+
+//    while (/*((goingUp && (transform.localScale.y < originalScale.y * scaleMultiplierWhenBounceReversingScal    ���>���>                  �?                ���>���>  �?  �?                ���>���>               �?                                               ���>���>  �?                    ���>���>                                    ���>���>  �?                    ���>���>                                                ���>���>  �?                    ���>���>                                    ���>���>  �?                    ���>���>             �I?�I?         �?                ���>���>  �?  �?                ���>���>                                    ���>���>  �?                    ���>���>                   �?         �?  �?  �?  �?  �?  �?  �?  �?  �?  �?  �?  �?  �?  �?  �?  �?                                                                                                  ��              ��                    �?  �?  �?  �?  �?  �?  �?  �?                                                                                                  ��              ��                        �?                                                                                                                                  ���>���>  �?                    ���>���>                                    ���>���>  �?                    ���>���>               �?  �?         �?                ���>���>  �?  �?                ���>���>                  �?                ���>���>  �?  �?                ���>���>                                                ���>���>  �?                    ���>���>                            

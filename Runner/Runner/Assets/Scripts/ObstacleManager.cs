@@ -177,7 +177,7 @@ public class ObstacleManager : MonoBehaviour
     //List<int> directions;
     void PutSetOfObstacles(int directionMultiplier = 1, int selectedGrid = -1)
     {
-        if(selectedGrid == -1) selectedGrid = Random.Range(0, allGrids.Length);
+        if(selectedGrid == -1) selectedGrid = Random.Range(1, allGrids.Length);
         float nextObstacleEndingPosition = (directionMultiplier == 1 ? lastObstacleEndingPositionDown : (directionMultiplier == -1 ? lastObstacleEndingPositionUp : transform.position.z + distanceAheadOfTarget)) + allGrids[selectedGrid].length * blockLength;
 
         //setOfMovingBlocks = new List<MovingBlock>();
