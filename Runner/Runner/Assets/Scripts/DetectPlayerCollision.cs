@@ -73,6 +73,9 @@ public class DetectPlayerCollision : MonoBehaviour
 
         canDetectCollisions = false;
         canStartDetectingCollisions = false;
+
+        allowChange = false;
+
         //StartDetectingCollisions();
     }
 
@@ -92,6 +95,7 @@ public class DetectPlayerCollision : MonoBehaviour
 
     Vector3 previousPosition;
 
+    public bool allowChange = false;
     private void FixedUpdate()
     {
         if (canStartDetectingCollisions)
@@ -104,7 +108,7 @@ public class DetectPlayerCollision : MonoBehaviour
             previousPosition = transform.position;
             //Debug.Log("forwardSpeed: " + forwardSpeed);
 
-            if (forwardSpeed < speed - allowance && canDetectCollisions)
+            if (forwardSpeed < speed - allowance && canDetectCollisions && !allowChange)
             {
                 //Debug.Log("canDetectCollisions");
                 if (stats.isAlive)
@@ -114,6 +118,8 @@ public class DetectPlayerCollision : MonoBehaviour
                     stats.HandleDeath();
                 }
             }
+
+            if (allowChange) allowChange = false;
 
             RaycastHit hit;
             if (Physics.Raycast(transform.position, Vector3.right, out hit, (sphereRadius - radiusAllowance) * transform.localScale.x, layerMask) ||

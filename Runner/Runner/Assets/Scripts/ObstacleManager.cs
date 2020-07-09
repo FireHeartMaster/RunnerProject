@@ -99,7 +99,7 @@ public class ObstacleManager : MonoBehaviour
             int numberOfTimeTutorialWasShown = PlayerPrefs.GetInt("tutorialNumberOfTimes", 0);
             //if (numberOfTimeTutorialWasShown == -10)
             //{
-            //    PlayerPrefs.SetInt("tutorialNumberOfTimes", 1);
+            //PlayerPrefs.SetInt("tutorialNumberOfTimes", 0);
             //    numberOfTimeTutorialWasShown = 0;
             //}
             //else
@@ -143,7 +143,7 @@ public class ObstacleManager : MonoBehaviour
 
     void SetTutorial()
     {
-
+        GameplayManager.gameplayManager.ShowTutorial();
     }
 
     private void Start()

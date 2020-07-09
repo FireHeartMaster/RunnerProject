@@ -14,6 +14,8 @@ public class PlayerStats : MonoBehaviour
             amountOfPoints = value;
             pointsText.text = amountOfPoints.ToString();
             jitterText.AnimateText();
+            GameplayManager.gameplayManager.IncreaseSpeed(GameplayManager.gameplayManager.amountToIncreaseSpeedAtEachCollectibleGrabbed);
+            GetComponent<DetectPlayerCollision>().allowChange = true;
         }
     }
 

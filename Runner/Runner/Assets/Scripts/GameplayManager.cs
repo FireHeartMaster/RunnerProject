@@ -85,6 +85,14 @@ public class GameplayManager : MonoBehaviour
         deathScreenNewRecordLabel.SetActive(false);
 
         tutorialState = TutorialState.state0;
+        if(tutorialCoroutine != null)
+        {
+            StopCoroutine(tutorialCoroutine);
+            for (int i = 0; i < tutorialObjects.Length; i++)
+            {
+                tutorialObjects[i].SetActive(false);
+            }
+        }
 
         StartGame();
     }
@@ -133,7 +141,7 @@ public class GameplayManager : MonoBehaviour
         //deathScreenNewRecordLabel.SetActive(false);
     }
 
-
+    [SerializeField] bool simulate = false;
     private void Update()
     {
         if (canStartGame)
@@ -160,6 +168,13 @@ public class GameplayManager : MonoBehaviour
                 }
             }
 
+
+            if(Time.timeScale == 0f && 
+                ((!simulate && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) ||
+                simulate && Input.GetMouseButtonDown(0)))
+            {
+                Time.timeScale = 1f;
+            }
 
             //Debug.Log("gravity: " + Physics.gravity.y);
         }
@@ -290,10 +305,11 @@ public class GameplayManager : MonoBehaviour
         ResetAll();
     }
 
-    void SetSpeed(float value)
+    public float amountToIncreaseSpeedAtEachCollectibleGrabbed = 0.5f;
+    public void IncreaseSpeed(float increaseValue)
     {
-        stats.GetComponent<MovePlayer>().speed = value;
-        stats.GetComponent<DetectPlayerCollision>().speed = value;
+        stats.GetComponent<MovePlayer>().speed += increaseValue;
+        stats.GetComponent<DetectPlayerCollision>().speed += increaseValue;
     }
 
     [ContextMenu("Time scale 0")]
@@ -307,11 +323,46 @@ public class GameplayManager : MonoBehaviour
     {
         Time.timeScale = 1f;
     }
+
     [SerializeField] GameObject[] tutorialObjects;
-    //IEnumerator ShowTutorialCoroutine()
-    //{
-        
-    //}
+
+    [SerializeField] float timeBetweenTutorialTips = 3f;
+    [SerializeField] float initialTimeForTutorialTips = 3f;
+    IEnumerator tutorialCoroutine;
+
+    public void ShowTutorial()
+    {
+        if(tutorialCoroutine != null)
+        {
+            StopCoroutine(tutorialCoroutine);
+        }
+
+        for (int i = 0; i < tutorialObjects.Length; i++)
+        {
+            tutorialObjects[i].SetActive(false);
+        }
+
+        tutorialCoroutine = ShowTutorialCoroutine();
+        StartCoroutine(tutorialCoroutine);
+    }
+
+    IEnumerator ShowTutorialCoroutine()
+    {
+        yield return new WaitForSeconds(initialTimeForTutorialTips);
+        for (int i = 0; i < tutorialObjects.Length; i++)
+        {
+            //if(i != 0) tutorialObjects[i - 1].SetActive(false);
+            tutorialObjects[i].SetActive(true);
+            TimeScaleZero();
+            
+            yield return new WaitForSeconds(0.8f);
+            tutorialObjects[i].SetActive(false);
+            
+            yield return new WaitForSeconds(timeBetweenTutorialTips);
+        }
+
+        //tutorialObjects[tutorialObjects.Length - 1].SetActive(false);
+    }
 }
 
 public enum TutorialState
