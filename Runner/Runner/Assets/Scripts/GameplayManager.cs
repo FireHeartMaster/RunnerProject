@@ -123,23 +123,6 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        //StartGame();
-        //currentGravityInversionInterval = minimumTimeToFirstInvertGravity + Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
-
-        //Physics.gravity = new Vector3(0f, -9.81f, 0f);
-
-        //originalGravity = Physics.gravity;
-        //fullGravity = Physics.gravity;
-
-        //gravityInversionAnimation.SetActive(false);
-
-        //gravitySlider.value = (Physics.gravity.y + 1) * 0.5f;
-
-        //deathScreen.SetActive(false);
-        //deathScreenNewRecordLabel.SetActive(false);
-    }
 
     [SerializeField] bool simulate = false;
     private void Update()
@@ -157,7 +140,6 @@ public class GameplayManager : MonoBehaviour
 
                     currentGravityInversionInterval = Random.Range(minTimeLimitForGravityInversion, maxTimeLimitForGravityInversion);
 
-                    //Physics.gravity *= -1;
                     if (gravityInversionCoroutine != null)
                     {
                         StopCoroutine(gravityInversionCoroutine);

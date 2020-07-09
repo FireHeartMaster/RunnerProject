@@ -83,9 +83,7 @@ public class Pooling : MonoBehaviour
 
     void ChooseMaterials()
     {
-        //Debug.Log("materials.Length: " + materials.Length);
         int staticBlocksMaterialIndex = Random.Range(0, materials.Length);
-        //Debug.Log("staticBlocksMaterialIndex: " + staticBlocksMaterialIndex);
         staticBlocksMaterial = materials[staticBlocksMaterialIndex];
 
         int maxTrials = 4;
@@ -175,7 +173,6 @@ public class Pooling : MonoBehaviour
             newMovingBlock.GetComponent<MeshRenderer>().material = movingBlocksMaterial;
             newMovingBlock.transform.SetParent(activeObjectsParent);
             newMovingBlock.GetComponent<MovingBlock>().Setup(upDownReference, direction);
-            //newMovingBlock.GetComponent<MovingBlock>().Setup();
             return newMovingBlock;
         }
         else
@@ -186,8 +183,7 @@ public class Pooling : MonoBehaviour
             newMovingBlock.transform.position = position;
             newMovingBlock.transform.rotation = rotation;
             allMovingBlocks.RemoveAt(allMovingBlocks.Count - 1);
-            newMovingBlock.GetComponent<MovingBlock>().Setup(upDownReference, direction);
-            //newMovingBlock.GetComponent<MovingBlock>().Setup();
+            newMovingBlock.GetComponent<MovingBlock>().Setup(upDownReference, direction);            
             return newMovingBlock;
         }
     }

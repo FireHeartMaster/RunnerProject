@@ -63,16 +63,6 @@ public class ObstacleManager : MonoBehaviour
         lastObstacleEndingPositionDown = 0f;
         lastObstacleEndingPositionUp = 0f;
 
-        //if (obstaclesPosition == ObstaclesPosition.Down || obstaclesPosition == ObstaclesPosition.Both)
-        //{
-        //    PutSetOfObstacles(1, 0);
-        //}
-
-        //if (obstaclesPosition == ObstaclesPosition.Up || obstaclesPosition == ObstaclesPosition.Both)
-        //{
-        //    PutSetOfObstacles(-1, 0);
-        //}
-
         alreadyStarted = false;
     }
 
@@ -97,16 +87,6 @@ public class ObstacleManager : MonoBehaviour
         {
             alreadyStarted = true;
             int numberOfTimeTutorialWasShown = PlayerPrefs.GetInt("tutorialNumberOfTimes", 0);
-            //if (numberOfTimeTutorialWasShown == -10)
-            //{
-            //PlayerPrefs.SetInt("tutorialNumberOfTimes", 0);
-            //    numberOfTimeTutorialWasShown = 0;
-            //}
-            //else
-            //{
-            //    PlayerPrefs.SetInt("tutorialNumberOfTimes", numberOfTimeTutorialWasShown + 1);
-            //}
-
 
             if (numberOfTimeTutorialWasShown < numberOfTimesToShowTutorial && showTutorialIfNeeded)
             {
@@ -173,15 +153,10 @@ public class ObstacleManager : MonoBehaviour
         } 
     }
 
-    //List<MovingBlock> setOfMovingBlocks;
-    //List<int> directions;
     void PutSetOfObstacles(int directionMultiplier = 1, int selectedGrid = -1)
     {
         if(selectedGrid == -1) selectedGrid = Random.Range(1, allGrids.Length);
         float nextObstacleEndingPosition = (directionMultiplier == 1 ? lastObstacleEndingPositionDown : (directionMultiplier == -1 ? lastObstacleEndingPositionUp : transform.position.z + distanceAheadOfTarget)) + allGrids[selectedGrid].length * blockLength;
-
-        //setOfMovingBlocks = new List<MovingBlock>();
-        //directions = new List<int>();
 
         for (int i = 0; i < allGrids[selectedGrid].length; i++)
         {
@@ -191,9 +166,7 @@ public class ObstacleManager : MonoBehaviour
                 if (directionMultiplier == -1) positionToInstantiate.y += heightOfUpperObstacles;
                 InstantiateObstacle(positionToInstantiate, allGrids[selectedGrid].obstacleGrid[i, j], allGrids[selectedGrid].collectableGrid[i, j], directionMultiplier);
             }
-        }
-
-        //SetupThisSetOfMovingBlocks();
+        }        
 
         if (directionMultiplier == 1)
         {
@@ -204,17 +177,6 @@ public class ObstacleManager : MonoBehaviour
         }
         
     }
-
-    //void SetupThisSetOfMovingBlocks()
-    //{
-    //    if (setOfMovingBlocks.Count == 0) return;
-
-    //    for (int i = 0; i < setOfMovingBlocks.Count; i++)
-    //    {
-    //        setOfMovingBlocks[i].Setup(directions[i]);
-    //    }
-
-    //}
 
     void PutTutorialObstacles(int directionMultiplier = 1)
     {
@@ -302,9 +264,7 @@ public class ObstacleManager : MonoBehaviour
                 //Instantiate(staticBlockPrefab, position, Quaternion.identity);
                 //Instantiate(movingBlockPrefab, position + Vector3.up * blockHeight * directionMultiplier, Quaternion.identity);
                 pooling.InstantiateStaticBlock(position, Quaternion.identity);
-                /*GameObject moving = */pooling.InstantiateMovingBlock(position + Vector3.up * blockHeight * directionMultiplier, Quaternion.identity, directionMultiplier, 1);
-                //setOfMovingBlocks.Add(moving.GetComponent<MovingBlock>());
-                //directions.Add(directionMultiplier);
+                pooling.InstantiateMovingBlock(position + Vector3.up * blockHeight * directionMultiplier, Quaternion.identity, directionMultiplier, 1);
                 collectableHeight = 2 * blockHeight;
                 break;
 
@@ -313,9 +273,7 @@ public class ObstacleManager : MonoBehaviour
                 //Instantiate(staticBlockPrefab, position, Quaternion.identity);
                 //Instantiate(movingBlockPrefab, position + Vector3.up * blockHeight * directionMultiplier, Quaternion.identity);
                 pooling.InstantiateStaticBlock(position, Quaternion.identity);
-                /*GameObject moving = */pooling.InstantiateMovingBlock(position + Vector3.up * blockHeight * directionMultiplier, Quaternion.identity, directionMultiplier, -1);
-                //setOfMovingBlocks.Add(moving.GetComponent<MovingBlock>());
-                //directions.Add(directionMultiplier);
+                pooling.InstantiateMovingBlock(position + Vector3.up * blockHeight * directionMultiplier, Quaternion.identity, directionMultiplier, -1);
                 collectableHeight = 2 * blockHeight;
                 break;
 
@@ -333,7 +291,6 @@ public class ObstacleManager : MonoBehaviour
     void InstantiateCollectable(Vector3 position, int collectableType)
     {
         if (collectableType == 0) return;
-        //Debug.Log("collectableType: " + collectableType);
         //Instantiate(collectablesPrefabs[collectableType - 1], position, Quaternion.Euler(collectableRotation));
         pooling.InstantiateCollectable(position, Quaternion.Euler(collectableRotation), collectableType - 1);
     }

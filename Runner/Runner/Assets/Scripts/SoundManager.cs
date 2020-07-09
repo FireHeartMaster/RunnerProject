@@ -13,8 +13,7 @@ public class SoundManager : MonoBehaviour
 
     public static SoundManager soundManager;
 
-    [SerializeField] AudioClip[] backgroundMusicClips;
-    //[SerializeField] AudioClip deathSound;
+    [SerializeField] AudioClip[] backgroundMusicClips;    
 
     float timeSinceLastBackgroundMusicStarted = 0f;
     float lastBackgroundMusicDuration;
@@ -37,10 +36,6 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        //PlayNewBackgroundMusic();
-    }
 
     [ContextMenu("Start Background Music")]
     public void StartBackgroundMusic()
@@ -73,9 +68,7 @@ public class SoundManager : MonoBehaviour
 
         inGameSounds.volume = 1f;
 
-        canChangeBackgroundMusic = true;
-
-        //StartBackgroundMusic();
+        canChangeBackgroundMusic = true;        
     }
 
     private void Update()
@@ -155,8 +148,7 @@ public class SoundManager : MonoBehaviour
         backgroundMusic.clip = backgroundMusicClips[currentBackgroundMusicIndex];
         backgroundMusic.Play();
 
-        lastBackgroundMusicDuration = backgroundMusicClips[currentBackgroundMusicIndex].length;
-        //timeSinceLastBackgroundMusicStarted = 0f;
+        lastBackgroundMusicDuration = backgroundMusicClips[currentBackgroundMusicIndex].length;        
     }
 
 

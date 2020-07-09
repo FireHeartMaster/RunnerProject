@@ -13,8 +13,7 @@ public class Eraser : MonoBehaviour
             pooling.DestroyMovingBlock(other.gameObject);
         }
         else if (other.GetComponent<Collectable>() != null)
-        {
-            //Debug.Log("Collectable");
+        {            
             //Destroy(other.gameObject);
             pooling.DestroyCollectable(other.gameObject, other.GetComponent<Collectable>().type);
         }

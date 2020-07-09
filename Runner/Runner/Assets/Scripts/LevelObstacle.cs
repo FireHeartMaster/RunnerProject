@@ -106,7 +106,6 @@ public class LevelObstacle
                 for (int j = 0; j < width; j++)
                 {
                     grid[i, j] = grid[i, j] >= numberOfBlockTypes ? 0 : grid[i, j];
-                    //grabbableGrid[i, j] = grabbableGrid[i, j] >= numberOfGrabbableTypes ? 0 : grabbableGrid[i, j];
                 }
             }
             RedrawTexture();
@@ -122,8 +121,7 @@ public class LevelObstacle
             for (int i = 0; i < length; i++)
             {
                 for (int j = 0; j < width; j++)
-                {
-                    //grid[i, j] = grid[i, j] >= numberOfBlockTypes ? 0 : grid[i, j];
+                {                    
                     grabbableGrid[i, j] = grabbableGrid[i, j] >= numberOfGrabbableTypes ? 0 : grabbableGrid[i, j];
                 }
             }
@@ -199,22 +197,6 @@ public class LevelObstacle
 
     public void LoadGrid(int[] auxLoadedGrid, int[] auxLoadedGrabbableGrid, int loadedLength, int loadedWidth, int numberOfBlockTypes, int numberOfGrabbableTypes)
     {
-        //if(loadedGrid == null || loadedGrabbableGrid == null)
-        //{
-        //    Debug.LogError("loadedGrid was null or loadedGrabbableGrid was null");
-        //    gridData.obstacleGrid = new int[5, 5];
-        //    gridData.collectableGrid = new int[5, 5];
-
-        //    loadedGrid = gridData.obstacleGrid;
-        //    loadedGrabbableGrid = gridData.collectableGrid;
-        //}
-        //Debug.Log("LoadGrid");
-        //Debug.Log("numberOfBlockTypes: " + numberOfBlockTypes);
-        //Debug.Log("numberOfGrabbableTypes: " + numberOfGrabbableTypes);
-        //Debug.Log("loadedGrid[0, 0]: " + loadedGrid[0, 0]);
-        //Debug.Log("loadedGrid.GetLength(0): " + loadedGrid.GetLength(0));
-        //Debug.Log("loadedGrid.GetLength(1): " + loadedGrid.GetLength(1));
-
         length = loadedLength;
         width = loadedWidth;
         this.numberOfBlockTypes = numberOfBlockTypes;
@@ -241,11 +223,6 @@ public class LevelObstacle
 
         gridData.numberOfGrabbableTypes = numberOfGrabbableTypes;
         gridData.collectableGrid = new int[length, width];
-
-        //Debug.Log("gridData.obstacleGrid.GetLength(0): " + gridData.obstacleGrid.GetLength(0));
-        //Debug.Log("gridData.obstacleGrid.GetLength(1): " + gridData.obstacleGrid.GetLength(1));
-        //Debug.Log("length: " + length);
-        //Debug.Log("width: " + width);
 
         gridData.length = length;
         gridData.width = width;
